@@ -1,0 +1,21 @@
+package ar.com.osde.middleware.es.candy
+
+import ar.com.epidataconsulting.drools.Persona;
+
+rule "Regla de Ejemplo"
+dialect "mvel"
+no-loop true
+	when
+		$persona:Persona( edad > 10)
+	then
+ 		System.out.println("Regla Ejecutada: " + $persona.nombre);
+end
+
+rule "Regla de Ejemplo 1"
+dialect "mvel"
+no-loop true
+	when
+		$persona:Persona( edad > 6)
+	then
+ 		System.out.println("Regla Ejecutada: " + $persona.nombre);
+end

@@ -1,0 +1,191 @@
+package ar.com.epidataconsulting.candy
+
+import ar.com.epidataconsulting.drools.Position;
+
+global ar.com.epidataconsulting.drools.MouseUtils util;
+
+expander candy.dsl
+
+########### DOS FILAS Y TRES COLUMNAS ##############
+
+/*
+* Descripción: horizontal linea abajo
+* ---------------------
+*   D   |  E   |   x
+* ---------------------
+*   x   |  x   |   C
+* ---------------------
+*/
+rule "Caso 2x3 1"
+Prioridad ALTA
+Utilizar el lenguaje JAVA para el modelado de esta regla
+Si la regla se ejecutó, no volver a ejecutar en este contexto
+Habilitarla para que el motor la considere en la agenda de ejecución
+	when
+		Si tomamos dos filas y tres columnas de caramelos, luego las nombramos de izquierda a derecha, de abajo hacia arriba con las letras A hasta la F, y por ultimo nos posicionamos sobre el primer caramelo, verificando que:
+		- el caramelo A es igual al caramelo B
+		- el caramelo C es distinto al caramelo A
+		- el caramelo F es igual al caramelo A 
+	then
+		Imprimir el nombre de esta Regla!!!
+		Hacer un click en el caramelo C y caramelo F
+end
+
+/*
+* Descripción: horizontal linea abajo
+* ---------------------
+*   D   |  X   |   F
+* ---------------------
+*   x   |  B   |   x
+* ---------------------
+*/
+rule "Caso 2x3 2"
+Prioridad ALTA
+Utilizar el lenguaje JAVA para el modelado de esta regla
+Si la regla se ejecutó, no volver a ejecutar en este contexto
+Habilitarla para que el motor la considere en la agenda de ejecución
+	when
+		Si tomamos dos filas y tres columnas de caramelos, luego las nombramos de izquierda a derecha, de abajo hacia arriba con las letras A hasta la F, y por ultimo nos posicionamos sobre el primer caramelo, verificando que:
+		- el caramelo A es igual al caramelo C
+		- el caramelo E es distinto al caramelo A
+		- el caramelo E es igual al caramelo A 
+	then
+		Imprimir el nombre de esta Regla!!!
+		Hacer un click en el caramelo B y caramelo E
+end
+
+/*
+* Descripción: horizontal linea arriba
+* ---------------------
+*   X   |  X   |   F
+* ---------------------
+*   A   |  B   |   x
+* ---------------------
+*/
+rule "Caso 2x3 3"
+Prioridad ALTA
+Utilizar el lenguaje JAVA para el modelado de esta regla
+Si la regla se ejecutó, no volver a ejecutar en este contexto
+Habilitarla para que el motor la considere en la agenda de ejecución
+	when
+		Si tomamos dos filas y tres columnas de caramelos, luego las nombramos de izquierda a derecha, de abajo hacia arriba con las letras A hasta la F, y por ultimo nos posicionamos sobre el primer caramelo, verificando que:
+		- el caramelo D es igual al caramelo E
+		- el caramelo F es distinto al caramelo D
+		- el caramelo D es igual al caramelo C
+	then
+		Imprimir el nombre de esta Regla!!!
+		Hacer un click en el caramelo C y caramelo F
+end
+
+/*
+* Descripción: horizontal linea arriba
+* ---------------------
+*   X   |  E   |   X
+* ---------------------
+*   A   |  X   |   C
+* ---------------------
+*/
+rule "Caso 2x3 4"
+Prioridad ALTA
+Utilizar el lenguaje JAVA para el modelado de esta regla
+Si la regla se ejecutó, no volver a ejecutar en este contexto
+Habilitarla para que el motor la considere en la agenda de ejecución
+	when
+		Si tomamos dos filas y tres columnas de caramelos, luego las nombramos de izquierda a derecha, de abajo hacia arriba con las letras A hasta la F, y por ultimo nos posicionamos sobre el primer caramelo, verificando que:
+		- el caramelo D es igual al caramelo F
+		- el caramelo E es distinto al caramelo D
+		- el caramelo B es igual al caramelo D
+	then
+		Imprimir el nombre de esta Regla!!!
+		Hacer un click en el caramelo B y caramelo E
+end
+
+########### TRES FILAS Y DOS COLUMNAS ##############
+
+rule "Caso 3x2 1"
+Prioridad BAJA
+Utilizar el lenguaje JAVA para el modelado de esta regla
+Si la regla se ejecutó, no volver a ejecutar en este contexto
+Habilitarla para que el motor la considere en la agenda de ejecución
+	when
+		Si tomamos tres filas y dos columnas de caramelos, luego las nombramos de izquierda a derecha, de abajo hacia arriba con las letras A hasta la F, y por ultimo nos posicionamos sobre el primer caramelo, verificando que:
+		- el caramelo A es igual al caramelo E
+		- el caramelo C es distinto al caramelo A
+		- el caramelo D es igual al caramelo A 
+	then
+		Imprimir el nombre de esta Regla!!!
+		Hacer un click en el caramelo C y caramelo D
+end
+
+/*
+* --------------
+*   E   |  x   |
+* --------------
+*   x   |  D   |
+* --------------
+*   x   |  B   |
+* --------------
+*/
+rule "Caso 3x2 2"
+Prioridad BAJA
+Utilizar el lenguaje JAVA para el modelado de esta regla
+Si la regla se ejecutó, no volver a ejecutar en este contexto
+Habilitarla para que el motor la considere en la agenda de ejecución
+	when
+		Si tomamos tres filas y dos columnas de caramelos, luego las nombramos de izquierda a derecha, de abajo hacia arriba con las letras A hasta la F, y por ultimo nos posicionamos sobre el primer caramelo, verificando que:
+		- el caramelo A es igual al caramelo C
+		- el caramelo E es distinto al caramelo A
+		- el caramelo F es igual al caramelo A 
+	then
+		Imprimir el nombre de esta Regla!!!
+		Hacer un click en el caramelo E y caramelo F
+end
+
+########### UNA FILA Y CUATRO COLUMNAS ##############
+
+rule "Caso 1x3 1"
+Prioridad ALTA
+Utilizar el lenguaje JAVA para el modelado de esta regla
+Si la regla se ejecutó, no volver a ejecutar en este contexto
+Habilitarla para que el motor la considere en la agenda de ejecución
+	when
+		Si tomamos una fila y cuatro columnas de caramelos, luego las nombramos de izquierda a derecha con las letras A hasta la D, y por ultimo nos posicionamos sobre el primer caramelo, verificando que:
+		- el caramelo A es igual al caramelo B
+		- el caramelo C es distinto al caramelo A
+		- el caramelo D es igual al caramelo A 
+	then
+		Imprimir el nombre de esta Regla!!!
+		Hacer un click en el caramelo C y caramelo D
+end
+
+########### CUATRO FILAS Y UNA SOLA COLUMNA ##############
+
+rule "Caso 4x1 1"
+Prioridad BAJA
+Utilizar el lenguaje JAVA para el modelado de esta regla
+Si la regla se ejecutó, no volver a ejecutar en este contexto
+Habilitarla para que el motor la considere en la agenda de ejecución
+	when
+		Si tomamos cuatro filas y una sola columna de caramelos, luego las nombramos de abajo hacia arriba con las letras A hasta la D, y por ultimo nos posicionamos sobre el primer caramelo, verificando que:
+		- el caramelo A es igual al caramelo B
+		- el caramelo C es distinto al caramelo A
+		- el caramelo D es igual al caramelo A 
+	then
+		Imprimir el nombre de esta Regla!!!
+		Hacer un click en el caramelo C y caramelo D
+end
+
+rule "Caso 4x1 2"
+Prioridad BAJA
+Utilizar el lenguaje JAVA para el modelado de esta regla
+Si la regla se ejecutó, no volver a ejecutar en este contexto
+Habilitarla para que el motor la considere en la agenda de ejecución
+	when
+		Si tomamos cuatro filas y una sola columna de caramelos, luego las nombramos de abajo hacia arriba con las letras A hasta la D, y por ultimo nos posicionamos sobre el primer caramelo, verificando que:
+		- el caramelo A es igual al caramelo C
+		- el caramelo A es igual al caramelo D 
+		- el caramelo A es distinto al caramelo B
+	then
+		Imprimir el nombre de esta Regla!!!
+		Hacer un click en el caramelo A y caramelo B
+end

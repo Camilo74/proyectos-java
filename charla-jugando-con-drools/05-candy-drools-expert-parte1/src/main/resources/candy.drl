@@ -1,0 +1,153 @@
+package ar.com.osde.middleware.es.candy
+
+import ar.com.epidataconsulting.drools.Position;
+
+global ar.com.epidataconsulting.drools.MouseUtils util;
+
+rule "todas las celdas"
+salience 50
+dialect "java"
+no-loop true
+enabled false
+	when
+		$current:Position()
+	then
+ 		System.out.println("current: " + $current + ", right: " + $current.get("right"));
+end
+
+rule "Caso 1"
+salience 50
+dialect "java"
+no-loop true
+enabled true
+	when
+		$a:Position($b:get("right") != null, $c:get("right").get("right") != null, $d:get("right").get("right").get("down") != null)
+		eval($a.equals($b))
+		eval(!$b.equals($c))
+		eval($b.equals($d))
+	then
+ 		System.out.println("************* REGLA " + drools.getRule().getName() +  " EJECUTADA !!!!***************");
+ 		util.click($d,$c);
+end
+
+rule "Caso 2"
+salience 50
+dialect "java"
+no-loop true
+enabled true
+	when
+		$a:Position($b:get("up") != null, $c:get("up").get("up") != null, $d:get("up").get("up").get("right") != null)
+		eval($a.equals($b))
+		eval(!$b.equals($c))
+		eval($b.equals($d))
+	then
+ 		System.out.println("************* REGLA " + drools.getRule().getName() +  " EJECUTADA !!!!***************");
+ 		util.click($d,$c);
+end
+
+rule "Caso 3"
+salience 50
+dialect "java"
+no-loop true
+enabled true
+	when
+		$a:Position($b:get("up") != null, $c:get("up").get("up") != null, $d:get("up").get("up").get("up") != null)
+		eval(!$a.equals($b))
+		eval($a.equals($c))
+		eval($a.equals($d))
+	then
+ 		System.out.println("************* REGLA " + drools.getRule().getName() +  " EJECUTADA !!!!***************");
+ 		util.click($b,$a);
+end
+
+rule "Caso 4"
+salience 50
+dialect "java"
+no-loop true
+enabled true
+	when
+		$a:Position($b:get("right") != null, $c:get("right").get("right") != null, $d:get("right").get("right").get("up") != null)
+		eval($a.equals($b))
+		eval(!$b.equals($c))
+		eval($b.equals($d))
+	then
+ 		System.out.println("************* REGLA " + drools.getRule().getName() +  " EJECUTADA !!!!***************");
+ 		util.click($d,$c);
+end
+
+rule "Caso 5"
+salience 50
+dialect "java"
+no-loop true
+enabled true
+	when
+		$a:Position($b:get("right") != null, $c:get("right").get("down") != null, $d:get("right").get("down").get("right") != null, $e:get("right").get("down").get("right").get("up") != null)
+		eval(!$a.equals($b))
+		eval($a.equals($c))
+		eval(!$a.equals($d))
+		eval($a.equals($e))
+	then
+ 		System.out.println("************* REGLA " + drools.getRule().getName() +  " EJECUTADA !!!!***************");
+ 		util.click($c,$b);
+end
+
+rule "Caso 6"
+salience 50
+dialect "java"
+no-loop true
+enabled true
+	when
+		$a:Position($b:get("right") != null, $c:get("right").get("right") != null, $d:get("right").get("right").get("right") != null)
+		eval(!$a.equals($b))
+		eval($a.equals($c))
+		eval($a.equals($d))
+	then
+ 		System.out.println("************* REGLA " + drools.getRule().getName() +  " EJECUTADA !!!!***************");
+ 		util.click($b,$a);
+end
+
+rule "Caso 7"
+salience 50
+dialect "java"
+no-loop true
+enabled true
+	when
+		$a:Position($b:get("right") != null, $c:get("right").get("down") != null, $d:get("right").get("down").get("down") != null)
+		eval(!$a.equals($b))
+		eval($a.equals($c))
+		eval($a.equals($d))
+	then
+ 		System.out.println("************* REGLA " + drools.getRule().getName() +  " EJECUTADA !!!!***************");
+ 		util.click($b,$a);
+end
+
+rule "Caso 8"
+salience 50
+dialect "java"
+no-loop true
+enabled true
+	when
+		$a:Position($b:get("down") != null, $c:get("down").get("down") != null, $d:get("down").get("down").get("right") != null)
+		eval($a.equals($b))
+		eval(!$a.equals($c))
+		eval($a.equals($d))
+	then
+ 		System.out.println("************* REGLA " + drools.getRule().getName() +  " EJECUTADA !!!!***************");
+ 		util.click($c,$d);
+end
+
+rule "Caso 9"
+salience 50
+dialect "java"
+no-loop true
+enabled true
+	when
+		$a:Position($b:get("right") != null, $c:get("right").get("up") != null, $d:get("right").get("up").get("right") != null, $e:get("right").get("up").get("right").get("down") != null)
+		eval(!$a.equals($b))
+		eval($a.equals($c))
+		eval(!$a.equals($d))
+		eval($a.equals($e))
+	then
+ 		System.out.println("************* REGLA " + drools.getRule().getName() +  " EJECUTADA !!!!***************");
+ 		util.click($c,$b);
+end

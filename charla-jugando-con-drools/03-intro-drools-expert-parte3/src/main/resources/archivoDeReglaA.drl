@@ -1,0 +1,41 @@
+package ar.com.epidataconsulting.drools
+
+import ar.com.epidataconsulting.drools.Persona;
+
+//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+// DECLARE'S
+//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+
+declare Masculino
+	edad : int
+	nombre : String
+end
+
+declare Femenino
+	edad : int
+	nombre : String
+end
+
+declare Notificacion
+	mensaje : String
+end
+
+//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+// FUNCIONES
+//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+
+function Object crearNuevaPersona(Persona persona){
+	Object result;
+	if(Persona.MASCULINO.equalsIgnoreCase(persona.getSexo())){
+		Masculino masculino = new Masculino();
+		masculino.setEdad(persona.getEdad());
+		masculino.setNombre(persona.getNombre());
+		result = masculino;
+	}else{
+		Femenino femenino = new Femenino();
+		femenino.setEdad(persona.getEdad());
+		femenino.setNombre(persona.getNombre());
+		result = femenino;
+	}
+	return result;
+}

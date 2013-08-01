@@ -1,0 +1,123 @@
+package ar.com.epidataconsulting.drools
+
+import ar.com.epidataconsulting.drools.Persona;
+
+//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+// DECLARE'S
+//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+
+declare Masculino
+	edad : int
+	nombre : String
+end
+
+declare Femenino
+	edad : int
+	nombre : String
+end
+
+declare Notificacion
+	mensaje : String
+end
+
+//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+// FUNCIONES
+//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+
+function Object crearNuevaPersona(Persona persona){
+	Object result;
+	if(Persona.MASCULINO.equalsIgnoreCase(persona.getSexo())){
+		Masculino masculino = new Masculino();
+		masculino.setEdad(persona.getEdad());
+		masculino.setNombre(persona.getNombre());
+		result = masculino;
+	}else{
+		Femenino femenino = new Femenino();
+		femenino.setEdad(persona.getEdad());
+		femenino.setNombre(persona.getNombre());
+		result = femenino;
+	}
+	return result;
+}
+
+//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+// REGLAS
+//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+
+rule "Regla todas las Personas mayores a 20 años"
+dialect "java"
+no-loop true
+date-effective "01-JUL-2013"
+date-expires "01-OCT-2013"
+	when
+		$persona:Persona( edad > 20)
+	then
+		//Imprimimos el nombre de la regla
+ 		System.out.println("["+drools.getRule().getName()+"]");
+ 		//creamos la entidad dependiendo del tipo de sexo
+ 		Object obj = crearNuevaPersona($persona);
+ 		//insertamos el nuevo objeto en la workingMemory para ser evaluado por otras reglas
+ 		insert(obj);
+ 		//quitamos a la persona de la workingMemory actual para que ninguna otra regla lo pueda evaluar
+ 		retract($persona);
+end
+
+rule "Regla solo sexo Masculino"
+dialect "java"
+no-loop true
+	when
+		$persona:Masculino()
+	then
+		//Imprimimos el nombre de la regla
+ 		System.out.println("["+drools.getRule().getName()+"]");
+ 		//creamos e insertamos la notificacion
+ 		Notificacion notif = new Notificacion();
+ 		notif.setMensaje("nueva persona de sexo masculino ingreso a la workingMemory");
+ 		insert(notif);
+ 		//quitamos a la persona de la workingMemory actual para que ninguna otra regla lo pueda evaluar
+ 		retract($persona);
+end
+
+rule "Regla solo sexo Femenino"
+dialect "java"
+no-loop true
+	when
+		$persona:Femenino()
+	then
+		//Imprimimos el nombre de la regla
+ 		System.out.println("["+drools.getRule().getName()+"]");
+ 		//creamos la notificacion
+ 		Notificacion notif = new Notificacion();
+ 		notif.setMensaje("nueva persona de sexo femenino ingreso a la workingMemory");
+ 		//insertamos la notificacion en la workingMemory
+ 		insert(notif);
+ 		//quitamos a la persona de la workingMemory actual para que ninguna otra regla lo pueda evaluar
+ 		retract($persona);
+end
+
+rule "Regla de modificacion de la Notificacion"
+salience 100 //se ejecuta primero
+dialect "mvel"
+no-loop true
+	when
+		$mensaje : Notificacion()
+	then
+		//Imprimimos el nombre de la regla y el mensaje de la notificacion
+ 		System.out.println("["+drools.getRule().getName()+"]");
+ 		//actualizamos el texto de la notificacion
+ 		$mensaje.mensaje = $mensaje.mensaje + " [MODIFICADO]";
+ 		update($mensaje);
+end
+
+rule "Regla de Notificacion Final"
+salience 50
+dialect "mvel"
+no-loop true
+	when
+		$mensaje : Notificacion()
+	then
+		//Imprimimos el nombre de la regla y el mensaje de la notificacion
+ 		System.out.println("["+drools.getRule().getName()+"] " + $mensaje.mensaje);
+ 		//quitamos a la persona de la workingMemory actual para que ninguna otra regla lo pueda evaluar
+ 		retract($mensaje);
+end

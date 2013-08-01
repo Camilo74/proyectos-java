@@ -1,0 +1,32 @@
+package ar.com.epidataconsulting.drools
+
+//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+// REGLAS
+//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+
+rule "Regla de modificacion de la Notificacion"
+salience 100 //se ejecuta primero
+dialect "mvel"
+no-loop true
+	when
+		$mensaje : Notificacion()
+	then
+		//Imprimimos el nombre de la regla y el mensaje de la notificacion
+ 		System.out.println("["+drools.getRule().getName()+"]");
+ 		//actualizamos el texto de la notificacion
+ 		$mensaje.mensaje = $mensaje.mensaje + " [MODIFICADO]";
+ 		update($mensaje);
+end
+
+rule "Regla de Notificacion Final"
+salience 50
+dialect "mvel"
+no-loop true
+	when
+		$mensaje : Notificacion()
+	then
+		//Imprimimos el nombre de la regla y el mensaje de la notificacion
+ 		System.out.println("["+drools.getRule().getName()+"] " + $mensaje.mensaje);
+ 		//quitamos a la persona de la workingMemory actual para que ninguna otra regla lo pueda evaluar
+ 		retract($mensaje);
+end

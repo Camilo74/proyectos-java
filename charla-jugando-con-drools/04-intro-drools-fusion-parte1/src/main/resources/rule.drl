@@ -1,0 +1,49 @@
+package com.epidataconsulting.drools
+
+import com.epidataconsulting.drools.model.EventA;
+import com.epidataconsulting.drools.model.EventB;
+
+declare EventA
+	@role(event)
+	@timestamp(timestamp)
+	@duration(durationTime)
+end
+
+declare EventB
+	@role(event)
+	@timestamp(timestamp)
+	@duration(durationTime)
+end
+
+rule "Rule After"
+dialect 'mvel'
+enabled true
+when
+	$eventA: EventA($aId: id) from entry-point "time stream"
+	not EventB($aId == id, this after [0s,5s] $eventA) from entry-point "time stream"
+then
+	//Imprimimos el nombre de la regla
+ 	System.out.println("["+drools.getRule().getName()+"]");
+end
+
+rule "Rule Before"
+dialect 'mvel'
+enabled true
+when
+	$eventA: EventA($aId: id) from entry-point "time stream"
+	not EventB($aId == id, this before [0s,5s] $eventA) from entry-point "time stream"
+then
+	//Imprimimos el nombre de la regla
+ 	System.out.println("["+drools.getRule().getName()+"]");
+end
+
+rule "Rule Coincides"
+dialect 'mvel'
+enabled true
+when
+	$eventA: EventA($aId: id) from entry-point "time stream"
+	EventB($aId == id, this coincides $eventA) from entry-point "time stream"
+then
+	//Imprimimos el nombre de la regla
+ 	System.out.println("["+drools.getRule().getName()+"]");
+end

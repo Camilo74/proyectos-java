@@ -1,0 +1,56 @@
+package ar.com.epidataconsulting.drools
+
+//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+// REGLAS
+//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+
+rule "Regla todas las Personas mayores a 20 años"
+dialect "java"
+no-loop true
+date-effective "01-JUL-2013"
+date-expires "01-OCT-2013"
+	when
+		$persona:Persona( edad > 20) from entry-point "seccion 1"
+	then
+		//Imprimimos el nombre de la regla
+ 		System.out.println("["+drools.getRule().getName()+"]");
+ 		//creamos la entidad dependiendo del tipo de sexo
+ 		Object obj = crearNuevaPersona($persona);
+ 		//insertamos el nuevo objeto en la workingMemory para ser evaluado por otras reglas
+ 		insert(obj);
+ 		//quitamos a la persona de la workingMemory actual para que ninguna otra regla lo pueda evaluar
+ 		retract($persona);
+end
+
+rule "Regla solo sexo Masculino"
+dialect "java"
+no-loop true
+	when
+		$persona:Masculino()
+	then
+		//Imprimimos el nombre de la regla
+ 		System.out.println("["+drools.getRule().getName()+"]");
+ 		//creamos e insertamos la notificacion
+ 		Notificacion notif = new Notificacion();
+ 		notif.setMensaje("nueva persona de sexo masculino ingreso a la workingMemory");
+ 		insert(notif);
+ 		//quitamos a la persona de la workingMemory actual para que ninguna otra regla lo pueda evaluar
+ 		retract($persona);
+end
+
+rule "Regla solo sexo Femenino"
+dialect "java"
+no-loop true
+	when
+		$persona:Femenino()
+	then
+		//Imprimimos el nombre de la regla
+ 		System.out.println("["+drools.getRule().getName()+"]");
+ 		//creamos la notificacion
+ 		Notificacion notif = new Notificacion();
+ 		notif.setMensaje("nueva persona de sexo femenino ingreso a la workingMemory");
+ 		//insertamos la notificacion en la workingMemory
+ 		insert(notif);
+ 		//quitamos a la persona de la workingMemory actual para que ninguna otra regla lo pueda evaluar
+ 		retract($persona);
+end
