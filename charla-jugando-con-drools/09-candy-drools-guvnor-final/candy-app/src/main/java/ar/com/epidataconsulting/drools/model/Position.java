@@ -4,9 +4,13 @@ import java.awt.Color;
 import java.awt.Robot;
 import java.util.Date;
 
+import org.apache.log4j.Logger;
+
 import ar.com.epidataconsulting.drools.CandyCrush;
 
 public class Position {
+	
+	private static Logger logger = Logger.getLogger(Position.class);
 	
 	private int x;
 	private int y;
@@ -16,8 +20,10 @@ public class Position {
 	
 	private Date timestamp;
 
-	private static int RANGO = 1;
+	private static int RANGO = 2;
 	private static int ERROR = 5;
+	
+	private Color color;
 	
 	public Position(Position position){
 		this.x = position.x;
@@ -61,20 +67,23 @@ public class Position {
 	}
 	
 	public Color getColor() {
-		try {
-			Robot bob = new Robot();
-			int rgb = 0;
-			int cdor = 0;
-			for (int xx = -RANGO; xx < RANGO; xx++) {
-				for (int yy = -RANGO; yy < RANGO; yy++) {
-					rgb+= bob.getPixelColor(x + xx, y + yy).getRGB();
-					cdor++;
+		if(color == null){
+			try {
+				Robot bob = new Robot();
+				int rgb = 0;
+				int cdor = 0;
+				for (int xx = -RANGO; xx < RANGO; xx++) {
+					for (int yy = -RANGO; yy < RANGO; yy++) {
+						rgb+= bob.getPixelColor(x + xx, y + yy).getRGB();
+						cdor++;
+					}
 				}
+				color = new Color(rgb / cdor); //calculamos el color con el promedio de la densidad de colores
+			} catch (Exception e) {
+				logger.error(e);
 			}
-			return new Color(rgb / cdor); //calculamos el color con el promedio de la densidad de colores
-		} catch (Exception e) {
-			return null;
 		}
+		return color;
 	}
 
 	public int getX() {

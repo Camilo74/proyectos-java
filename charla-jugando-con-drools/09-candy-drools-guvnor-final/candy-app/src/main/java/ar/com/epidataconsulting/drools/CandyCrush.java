@@ -57,8 +57,8 @@ public class CandyCrush extends JFrame {
 	private JButton botonSalida;
 	private JButton botonJugar;
 
-	private final int COLUMNAS = 9;
-	private final int FILAS = 9;
+	private final int COLUMNAS = 8;
+	private final int FILAS = 5;
 
 	private StatefulKnowledgeSession ksession;
 	private WorkingMonitor workinMonitor;
@@ -338,12 +338,15 @@ public class CandyCrush extends JFrame {
 						for (int col = 0; col < COLUMNAS; col++) {
 							try {
 								Position pos = matriz[fila][col];
-								ksession.insert(new Position(pos));
+								Position nPos = new Position(pos);
+								ksession.insert(nPos);
+								logger.info("ingresando: " + nPos);
 							} catch (Exception e) {
 								logger.error(e.getMessage());
 							}
 						}
 					}
+					logger.info("esperando WorkingMonitor.run()...............................");
 				} while (true);
 			} catch (Exception e) {
 				logger.error(e.getMessage());
