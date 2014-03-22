@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <title>Demo Facebook</title>
+</head>
+<body>
+    
+	<h1>Demo2 Facebook</h1>
+	
+	<fb:like href="https://www.facebook.com/pages/Manuel-Tienda-Leon-Terminal/217920481569104"></fb:like>
+<!-- 	<fb:like href="https://www.facebook.com/fravegaonline"></fb:like> -->
+<!-- 	<fb:like href="https://www.facebook.com/pages/Fravega-Catalogo/320530591290833"></fb:like> -->
+
+    <script type="text/javascript" src="http://connect.facebook.net/es_ES/all.js"></script>
+<!--     <script type="text/javascript" src="js/home.js"></script> -->
+
+
+<div id="fb-root"></div>
+
+<!-- <script> -->
+// (function(d, s, id) {
+//   var js, fjs = d.getElementsByTagName(s)[0];
+//   if (d.getElementById(id)) return;	
+//   js = d.createElement(s); js.id = id;
+//   js.src = "http://connect.facebook.net/es_LA/all.js#xfbml=1&appId=576063092479459";
+//   fjs.parentNode.insertBefore(js, fjs);
+// }(document, 'script', 'facebook-jssdk'));
+<!-- </script> -->
+
+<!-- <div class="fb-like" data-href="https://www.facebook.com/pages/Manuel-Tienda-Leon-Terminal/217920481569104" data-layout="standard" data-action="like" data-show-faces="false" data-share="false"></div> -->
+
+<!-- <input type="button" id="likebutton" title="Enviar" onclick="javascript:$('.fb-like').find('a.connect_widget_like_button').click();"></input> -->
+
+<script>
+document.getElementById('fb-login').onclick = function() {
+  FB.login(function(response) {
+    Log.info('FB.login callback', response);
+    if (response.status === 'connected') {
+      Log.info('User is logged in');
+    } else {
+      Log.info('User is logged out');
+    }
+  });
+};
+</script>
+
+<button class="btn btn-success" id="fb-login">Login</button>
+
+</body>
+</html>

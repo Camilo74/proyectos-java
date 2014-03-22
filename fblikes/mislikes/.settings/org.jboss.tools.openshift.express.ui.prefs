@@ -1,0 +1,7 @@
+eclipse.preferences.version=1
+org.jboss.tools.openshift.ApplicationId=52db0e92500446f6860001aa
+org.jboss.tools.openshift.ApplicationName=mislikes
+org.jboss.tools.openshift.Connection=https\://lezcano.da%40gmail.com@
+org.jboss.tools.openshift.DeployFolder=deployments
+org.jboss.tools.openshift.Domain=q3s
+org.jboss.tools.openshift.RemoteName=origin
