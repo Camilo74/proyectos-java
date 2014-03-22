@@ -1,0 +1,137 @@
+<?xml version="1.0"?>
+<project name="qestudio-core-model" default="all" basedir="." xmlns:ac="antlib:net.sf.antcontrib">
+
+  <!-- avenida gaona 2860, ramos mejia (pleno centro de ramos, lado norte con estacionamiento) 21.30 hs -->
+
+	<!-- PROPERTIES -->
+	
+	<property name="maven-command" value="mvn.bat"/>
+	<property name="maven-parameter" value="clean install -Dmaven.test.skip=true"/>
+
+	<!--CORE -->
+	
+	<target name="qestudio-core-model">
+		<exec executable="${maven-command}" dir="qestudio-core-model">
+			<arg line="${maven-parameter}"></arg>
+		</exec>
+	</target>
+
+	<target name="qestudio-core-commons" depends="qestudio-core-model">
+		<exec executable="${maven-command}" dir="qestudio-core-commons">
+			<arg line="${maven-parameter}"></arg>
+		</exec>
+	</target>
+
+	<target name="qestudio-core-exception" depends="qestudio-core-commons">
+		<exec executable="${maven-command}" dir="qestudio-core-exception">
+			<arg line="${maven-parameter}"></arg>
+		</exec>
+	</target>
+
+	<target name="core" depends="qestudio-core-exception">
+		<echo>########################</echo>
+		<echo>Modulo CORE compilado...</echo>
+		<echo>########################</echo>
+	</target>
+	
+	<!--target name="qestudio-core-launcher">
+		<exec executable="${maven-command}" dir="qestudio-core-launcher">
+			<arg line="${maven-parameter}"></arg>
+		</exec>
+	</target-->
+	
+	<!-- SERVER -->
+	
+	<target name="qestudio-server-dao">
+		<exec executable="${maven-command}" dir="qestudio-server-dao">
+			<arg line="${maven-parameter}"></arg>
+		</exec>
+	</target>
+
+	<target name="qestudio-server-bo" depends="qestudio-server-dao">
+		<exec executable="${maven-command}" dir="qestudio-server-bo">
+			<arg line="${maven-parameter}"></arg>
+		</exec>
+	</target>	
+
+	<target name="qestudio-server-socket" depends="qestudio-server-bo">
+		<exec executable="${maven-command}" dir="qestudio-server-socket">
+			<arg line="${maven-parameter}"></arg>
+		</exec>
+	</target>
+	
+	<!--target name="qestudio-server-swing" depends="qestudio-server-socket">
+		<exec executable="${maven-command}" dir="qestudio-server-swing">
+			<arg line="${maven-parameter}"></arg>
+		</exec>
+	</target-->
+
+	<target name="server" depends="qestudio-server-socket">
+		<echo>##########################</echo>
+		<echo>Modulo SERVER compilado...</echo>
+		<echo>##########################</echo>
+	</target>
+	
+	<!-- CLIENT -->
+
+	<target name="qestudio-client-socket">
+		<exec executable="${maven-command}" dir="qestudio-client-socket">
+			<arg line="${maven-parameter}"></arg>
+		</exec>
+	</target>
+
+	<target name="qestudio-client-swing" depends="qestudio-client-socket">
+		<exec executable="${maven-command}" dir="qestudio-client-swing">
+			<arg line="${maven-parameter}"></arg>
+		</exec>
+	</target>
+
+	<target name="client" depends="qestudio-client-swing">
+		<echo>##########################</echo>
+		<echo>Modulo CLIENT compilado...</echo>
+		<echo>##########################</echo>
+	</target>
+
+	<!-- ALL -->
+
+	<target name="all" depends="core,server,client">
+		<echo>###############################</echo>
+		<echo>TODOS LOS MODULOS COMPILADOS...</echo>
+		<echo>###############################</echo>
+	</target>
+	
+	<!-- ECLIPSE CLEAN -->
+
+	<target name="clean">
+		<ac:foreach target="list.dirs1" param="dir.name">
+			<path>
+				<dirset dir="${basedir}" includes="*"/>
+			</path>
+		</ac:foreach>
+	</target>
+	 
+	<target name="list.dirs1">
+		<exec executable="${maven-command}" dir="${dir.name}">
+			<arg line="clean -o"></arg>
+		</exec>
+	</target>
+
+
+	<!-- ECLIPSE ECLIPSE:ECLIPSE -->
+
+	<target name="eclipse:eclipse">
+		<ac:foreach target="list.dirs2" param="dir.name">
+			<path>
+				<dirset dir="${basedir}" includes="*"/>
+			</path>
+		</ac:foreach>
+	</target>
+	 
+	<target name="list.dirs2">
+		<exec executable="${maven-command}" dir="${dir.name}">
+			<arg line="eclipse:clean eclipse:eclipse"></arg>
+		</exec>
+	</target>
+
+
+</project>
