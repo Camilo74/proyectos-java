@@ -1,0 +1,22 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+	<description>ROOT Contexto de la aplicación PROTOYPE </description>
+
+	<bean id="principal.controller" class="ar.com.qestudio.client.swing.controller.PrincipalController" init-method="init">
+		<property name="client" ref="client.manager" />
+		<property name="principalView" ref="principal.view" />
+		<property name="fileManagerController" ref="file-manager.controller" />
+	</bean>
+
+	<bean id="query.controller" class="ar.com.qestudio.client.swing.controller.QueryController" init-method="init" scope="prototype">
+		<property name="queryView" ref="query.view" />
+	</bean>
+
+	<bean id="file-manager.controller" class="ar.com.qestudio.client.swing.controller.FileManagerController" init-method="init">
+		<property name="client" ref="client.manager" />
+		<property name="fileManagerView" ref="file-manager.view" />
+	</bean>
+
+</beans>

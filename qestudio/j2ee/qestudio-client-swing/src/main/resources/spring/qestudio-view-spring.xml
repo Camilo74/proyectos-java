@@ -1,0 +1,16 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+	<description>ROOT Contexto de la aplicación PROTOYPE </description>
+
+	<bean id="query.view" class="ar.com.qestudio.client.swing.view.QueryView" scope="prototype"/>
+	
+	<bean id="principal.view" class="ar.com.qestudio.client.swing.view.PrincipalView" />
+
+	<bean id="file-manager.view" class="ar.com.qestudio.client.swing.view.FileManagerView">
+		<constructor-arg ref="principal.view"/>
+        <constructor-arg type="boolean" value="true"/>
+	</bean>
+
+</beans>
