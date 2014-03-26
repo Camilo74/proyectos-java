@@ -25,6 +25,8 @@ import com.sun.jersey.multipart.FormDataParam;
 @Path("/hello")
 public class HelloResource {
 
+	private static Stack<File> stack = new Stack<File>();
+	
 	@GET
 	@Path("/hellotext")
 	@Produces(MediaType.TEXT_PLAIN)
@@ -43,7 +45,15 @@ public class HelloResource {
 	@Path("/hellohtml")
 	@Produces(MediaType.TEXT_HTML)
 	public String sayHtmlHello() {
-		return "<html><title>Hello World HTML</title><body><h1>Hello World HTML JRebel Rules!</body></h1></html>";
+		return "<!DOCTYPE html>" +
+		"<html>" +
+		"<body>" +
+		"<audio controls>" +
+		  "<source src=\"../../c:/OSDE/entrada.mp3\" type=\"audio/mpeg\">" +
+		"Your browser does not support the audio element." +
+		"</audio>" +
+		"</body>" +
+		"</html>";
 	}
 
 	@GET
@@ -52,8 +62,7 @@ public class HelloResource {
 	public Response sayHtmlImage() {
 		File file = new File("c:\\logo.png");
 		ResponseBuilder response = Response.ok((Object) file);
-		response.header("Content-Disposition",
-				"attachment; filename=image_from_server.png");
+		response.header("Content-Disposition","attachment; filename=image_from_server.png");
 		return response.build();
 	}
 
@@ -73,26 +82,28 @@ public class HelloResource {
 	public Response sayHtmlAudio2() {
 		File file = new File("c:\\audio.wav");
 		ResponseBuilder response = Response.ok((Object) file);
-		response.header("Content-Disposition",
-				"attachment; filename=audio2.wav");
+		response.header("Content-Disposition","attachment; filename=audio2.wav");
 		return response.build();
+	}
+
+	@GET
+	@Path("/get2")
+	@Produces(MediaType.APPLICATION_OCTET_STREAM)
+	public File sayHtmlAudio3() {
+		File file = new File("c:\\OSDE\\junk.aif");
+		return file;
 	}
 
 	@GET
 	@Path("/get")
 	@Produces(MediaType.APPLICATION_OCTET_STREAM)
-	public InputStream sayInputStream() {
-		System.out.println("## pop");
-		return stack.pop();
-	}
-
-	@GET
-	@Path("/helloaudio3")
-	@Produces(MediaType.APPLICATION_OCTET_STREAM)
-	public File sayHtmlAudio3() {
-		File file = new File("c:\\audio.wav");
+	public File sayInputStream() {
+		File file = stack.pop();
+		System.out.println("#### pop: " + file.getName());
 		return file;
 	}
+	
+	//--------------------
 	
 	@POST
 	@Consumes({ "text/xml", "text/plain", MediaType.TEXT_HTML })
@@ -107,7 +118,7 @@ public class HelloResource {
 	private static final int BUFFER_SIZE = 1024;
 
 	@POST
-	@Path("/file")
+	@Path("/push")
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	public Response fileUpload(
 			@FormDataParam("file") InputStream uploadedInputStream,
@@ -121,7 +132,8 @@ public class HelloResource {
 			final String fileName = fileInfo.getFileName();
 			String uploadedFileLocation = FILE_UPLOAD_PATH + File.separator + System.currentTimeMillis() +  fileName;
 			try {
-				saveToDisc(uploadedInputStream, uploadedFileLocation);
+				File file = saveToDisc(uploadedInputStream, uploadedFileLocation);
+				stack.push(file);
 			} catch (Exception e) {
 				respStatus = Response.Status.INTERNAL_SERVER_ERROR;
 				e.printStackTrace();
@@ -132,8 +144,9 @@ public class HelloResource {
 	}
 
 	// save uploaded file to the specified location
-	private void saveToDisc(final InputStream fileInputStream, final String fileUploadPath) throws IOException {
-		final OutputStream out = new FileOutputStream(new File(fileUploadPath));
+	private File saveToDisc(final InputStream fileInputStream, final String fileUploadPath) throws IOException {
+		File file = File.createTempFile("temp", ".wav");
+		final OutputStream out = new FileOutputStream(file);
 		int read = 0;
 		byte[] bytes = new byte[BUFFER_SIZE];
 		while ((read = fileInputStream.read(bytes)) != -1) {
@@ -141,27 +154,26 @@ public class HelloResource {
 		}
 		out.flush();
 		out.close();
+		return file;
 	}
-
-	private static Stack<InputStream> stack = new Stack<InputStream>();
 	
-	@POST
-	@Path("/put")
-	@Consumes(MediaType.MULTIPART_FORM_DATA)
-	public Response fileUploadStack(
-			@FormDataParam("file") InputStream uploadedInputStream,
-			@FormDataParam("file") FormDataContentDisposition fileInfo) throws IOException {
-		
-		Response.Status respStatus = Response.Status.OK;
-		
-		if (fileInfo == null) {
-			respStatus = Response.Status.INTERNAL_SERVER_ERROR;
-		} else {
-			stack.push(uploadedInputStream);
-			
-		}
-
-		return Response.status(respStatus).build();
-	}
+//	@POST
+//	@Path("/put")
+//	@Consumes(MediaType.MULTIPART_FORM_DATA)
+//	public Response fileUploadStack(
+//			@FormDataParam("file") InputStream uploadedInputStream,
+//			@FormDataParam("file") FormDataContentDisposition fileInfo) throws IOException {
+//		
+//		Response.Status respStatus = Response.Status.OK;
+//		
+//		if (fileInfo == null) {
+//			respStatus = Response.Status.INTERNAL_SERVER_ERROR;
+//		} else {
+//			stack.push(uploadedInputStream);
+//			
+//		}
+//
+//		return Response.status(respStatus).build();
+//	}
 	
 }

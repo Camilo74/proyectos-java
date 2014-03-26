@@ -33,6 +33,7 @@
   <classpathentry kind="var" path="M2_REPO/org/eclipse/jetty/jetty-util/8.0.4.v20111024/jetty-util-8.0.4.v20111024.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/eclipse/jetty/jetty-webapp/8.0.4.v20111024/jetty-webapp-8.0.4.v20111024.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/eclipse/jetty/jetty-xml/8.0.4.v20111024/jetty-xml-8.0.4.v20111024.jar"/>
+  <classpathentry kind="var" path="M2_REPO/javax/media/jmf/2.1.1e/jmf-2.1.1e.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/mortbay/jetty/jsp-2.1-glassfish/2.1.v20100127/jsp-2.1-glassfish-2.1.v20100127.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/mortbay/jetty/jsp-api-2.1-glassfish/2.1.v20100127/jsp-api-2.1-glassfish-2.1.v20100127.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/jvnet/mimepull/1.6/mimepull-1.6.jar"/>
