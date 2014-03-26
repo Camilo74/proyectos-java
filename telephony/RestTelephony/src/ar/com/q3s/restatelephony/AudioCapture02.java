@@ -160,8 +160,7 @@ public class AudioCapture02 extends JFrame {
 			// Get everything set up for capture
 			audioFormat = getAudioFormat();
 
-			DataLine.Info dataLineInfo = new DataLine.Info(
-					TargetDataLine.class, audioFormat);
+			DataLine.Info dataLineInfo = new DataLine.Info(TargetDataLine.class, audioFormat);
 
 			// Select one of the available
 			// mixers.
@@ -195,13 +194,10 @@ public class AudioCapture02 extends JFrame {
 			byte audioData[] = byteArrayOutputStream.toByteArray();
 			// Get an input stream on the byte array
 			// containing the data
-			InputStream byteArrayInputStream = new ByteArrayInputStream(
-					audioData);
+			InputStream byteArrayInputStream = new ByteArrayInputStream(audioData);
 			AudioFormat audioFormat = getAudioFormat();
-			audioInputStream = new AudioInputStream(byteArrayInputStream,
-					audioFormat, audioData.length / audioFormat.getFrameSize());
-			DataLine.Info dataLineInfo = new DataLine.Info(
-					SourceDataLine.class, audioFormat);
+			audioInputStream = new AudioInputStream(byteArrayInputStream,audioFormat, audioData.length / audioFormat.getFrameSize());
+			DataLine.Info dataLineInfo = new DataLine.Info(SourceDataLine.class, audioFormat);
 			sourceDataLine = (SourceDataLine) AudioSystem.getLine(dataLineInfo);
 			sourceDataLine.open(audioFormat);
 			sourceDataLine.start();
@@ -279,8 +275,7 @@ public class AudioCapture02 extends JFrame {
 				int cnt;
 				// Keep looping until the input read method
 				// returns -1 for empty stream.
-				while ((cnt = audioInputStream.read(tempBuffer, 0,
-						tempBuffer.length)) != -1) {
+				while ((cnt = audioInputStream.read(tempBuffer, 0,tempBuffer.length)) != -1) {
 					if (cnt > 0) {
 						// Write data to the internal buffer of
 						// the data line where it will be

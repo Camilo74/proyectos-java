@@ -11,10 +11,10 @@ import javax.sound.sampled.LineUnavailableException;
  *
  */
 public class TestSoundRecordingUtil {
-    private static final int RECORD_TIME = 60000;   // 60 seconds  
+    private static final int RECORD_TIME = 1000;   // 60 seconds  
      
     public static void main(String[] args) {
-        File wavFile = new File("C:/Record.wav");
+        File wavFile = new File("C:\\OSDE\\record.wav");
          
         final SoundRecordingUtil recorder = new SoundRecordingUtil();
          

@@ -149,8 +149,7 @@ public class AudioRecorder01 extends JFrame {
 		try {
 			// Get things set up for capture
 			audioFormat = getAudioFormat();
-			DataLine.Info dataLineInfo = new DataLine.Info(
-					TargetDataLine.class, audioFormat);
+			DataLine.Info dataLineInfo = new DataLine.Info(TargetDataLine.class, audioFormat);
 			targetDataLine = (TargetDataLine) AudioSystem.getLine(dataLineInfo);
 
 			// Create a thread to capture the microphone
