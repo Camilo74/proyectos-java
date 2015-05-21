@@ -1,16 +1,13 @@
 package ar.com.qestudio.agent.backend.rest;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
@@ -48,7 +45,7 @@ public class MyResource {
 	@Path("/status")
 	@Produces(value=MediaType.APPLICATION_JSON)
 	public String status(){
-		String os = System.getProperty("os.name");
+		String os = getSystemName();
 		return "jsonCallback({'os':'"+os+"'})";
 	}
 	
@@ -66,8 +63,9 @@ public class MyResource {
 			response.close(); // You should close connections!
 			File dest = new File(temp.toURI().toURL().getPath());
 			copyFileUsingStream(remoteFile, dest);
-//			java.awt.Desktop.getDesktop().open(dest);
+			java.awt.Desktop.getDesktop().open(dest);
 			open(dest);
+			System.out.println("$$$$$$$$$$$$$$$");
 			put(filename, dest);
 			return Response.status(Response.Status.OK).build();
 		} catch (ProcessingException e2){
@@ -144,20 +142,29 @@ public class MyResource {
 	
 	public static void open(File file) throws Exception{
         try {
-    		String os = System.getProperty("os.name").replaceAll(" ", "");
+    		String os = getSystemName();
     		String command = ContextHolderUtil.getProperty("qestudio.agent.exec."+os).trim();
     		//--------------------------------------------------------
-    		
             Process p = Runtime.getRuntime().exec(command + " " + file);
-            BufferedReader in = new BufferedReader(new InputStreamReader(p.getInputStream()));
-            String line = null;
-            while ((line = in.readLine()) != null) {
-                System.out.println(line);
-            }
-            System.out.println("##### terminado");
+            
+            byte[] bo = new byte[100];
+            p.getInputStream().read(bo);
+            System.out.println(new String(bo));
+            
+//            System.out.println("iniciando con proceso numero: " + p);
+//            BufferedReader in = new BufferedReader(new InputStreamReader(p.getInputStream()));
+//            String line = null;
+//            while ((line = in.readLine()) != null) {
+//                System.out.println(line);
+//            }
+            System.out.println("##### terminado el proceso numero: " + p);
         } catch (IOException e) {
             e.printStackTrace();
         }
+	}
+	
+	public static String getSystemName(){
+		return System.getProperty("os.name").replaceAll(" ", "");
 	}
 	
 	public static void copyFileUsingStream(File source, File dest)
