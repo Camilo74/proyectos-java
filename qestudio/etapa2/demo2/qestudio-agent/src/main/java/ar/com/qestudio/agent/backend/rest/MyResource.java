@@ -8,14 +8,11 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
-import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.ProcessingException;
-import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
@@ -26,14 +23,13 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 
-import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 import org.jboss.resteasy.client.jaxrs.ResteasyClient;
 import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataOutput;
 import org.jboss.resteasy.specimpl.MultivaluedMapImpl;
 
-import ar.com.qestudio.agent.FileForm;
+import ar.com.qestudio.agent.backend.exception.CommandNotFoundException;
 import ar.com.qestudio.agent.backend.util.ContextHolderUtil;
 
 @Path("/")
@@ -43,43 +39,50 @@ public class MyResource {
 	
 	@GET
 	@Path("/status")
-	@Produces(value=MediaType.APPLICATION_JSON)
-	public String status(){
+	public Response status(){
 		String os = getSystemName();
-		return "jsonCallback({'os':'"+os+"'})";
+		return Response.ok().entity(os).build();
 	}
 	
 	@GET
 	@Path("/open")
-	public Response get(@QueryParam("hosts") String hosts, @QueryParam("filename") String filename) {
+	public Response open(@QueryParam("hosts") String hosts, @QueryParam("filename") String filename) {
 		try {
+			String url = "http://" + DEFAULT + "/rest/download/" + filename;
+			System.out.println(url);
 			File temp = new File(System.getProperty("java.io.tmpdir") + File.separator + filename);
 			// --------------------
-			Client client = ClientBuilder.newBuilder().build();
-			WebTarget target = client.target("http://" + DEFAULT + "/rest/download/" + filename);
-			System.out.println("http://" + DEFAULT + "/rest/download/" + filename);
+			Client client =  new ResteasyClientBuilder()
+		    .establishConnectionTimeout(2, TimeUnit.SECONDS)
+		    .socketTimeout(2, TimeUnit.SECONDS)
+		    .build();
+			
+			WebTarget target = client.target(url);
 			Response response = target.request().get();
 			File remoteFile = response.readEntity(File.class);
 			response.close(); // You should close connections!
 			File dest = new File(temp.toURI().toURL().getPath());
 			copyFileUsingStream(remoteFile, dest);
-			java.awt.Desktop.getDesktop().open(dest);
 			open(dest);
-			System.out.println("$$$$$$$$$$$$$$$");
 			put(filename, dest);
-			return Response.status(Response.Status.OK).build();
+			return Response.ok().build();
 		} catch (ProcessingException e2){
-			System.out.println("buscoo la conexion! - " + hosts);
 			DEFAULT = getAvailableConnection(hosts.split(","));
-			return get(hosts, filename);
+			if(DEFAULT == null){
+				return Response.serverError().entity("No se puede conectar con el servidor de archivos").build();
+			}
+			return open(hosts, filename);
 		} catch (Exception e) {
-			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+			return Response.serverError().entity(e.getMessage()).build();
 		}
+		
 	}
 
 	private String getAvailableConnection(String[] hosts){
 		for (String h : hosts) {
+			System.out.println("Intentando conectar a: " + h);
 			if(connection(h)){
+				System.out.println("Nueva conexion encontrada: " + h);
 				return h;
 			}
 		}
@@ -142,10 +145,10 @@ public class MyResource {
 	
 	public static void open(File file) throws Exception{
         try {
-    		String os = getSystemName();
-    		String command = ContextHolderUtil.getProperty("qestudio.agent.exec."+os).trim();
+    		String command = ContextHolderUtil.getProperty("qestudio.agent.exec");
+    		if(command == null) throw new CommandNotFoundException("No existe el comando para este sistema operativo: " + getSystemName());
     		//--------------------------------------------------------
-            Process p = Runtime.getRuntime().exec(command + " " + file);
+            Process p = Runtime.getRuntime().exec(command.trim() + " " + file);
             
             byte[] bo = new byte[100];
             p.getInputStream().read(bo);
@@ -184,30 +187,4 @@ public class MyResource {
 			os.close();
 		}
 	}
-	
-	@POST
-	@Path("/metadata2")	
-	@Produces("text/html")
-	@Consumes(MediaType.MULTIPART_FORM_DATA)
-	public String metadata2(@FormParam("filename") String filename) {
-		System.out.println("######### filename: " + filename);
-		return filename;
-	}
-
-	@POST
-	@Path("/metadata3")
-	@Produces("text/html")
-	@Consumes("multipart/form-data")
-	public String metadata3(@MultipartForm FileForm input) {
-		System.out.println("######### filename: " + input.getFileName());
-		return input.getFileName();
-	}
-	
-    @POST
-    @Path("/metadata4")
-    @Consumes(MediaType.MULTIPART_FORM_DATA)
-    public Response metadata4(@MultipartForm FileForm input) {
-    	System.out.println("######### filename: " + input.getFileName());
-    	return Response.ok().build();
-    }
 }

@@ -25,7 +25,16 @@ public class ContextHolderUtil {
 	private ContextHolderUtil(){}
 	
 	public static String getProperty(String key){
-		return prop.getProperty(key);
+		String value = prop.getProperty(key + "." +  getSystemName());
+		if(value == null){
+			value = prop.getProperty(key);			
+		}
+		return value;
 	}
+	
+	public static String getSystemName(){
+		return System.getProperty("os.name").replaceAll(" ", "");
+	}
+
 	
 }
