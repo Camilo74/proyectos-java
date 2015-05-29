@@ -1,0 +1,6 @@
+<div id="element-${id}">
+	<a href="#" onclick="expand('${id}','${hostip}','${hostname}','${osname}','${acount}')">(+)</a>
+	<label>${hostip}</label>
+	<label>(${hostname}:${osname})</label>
+	<label>(${acount})</label>
+</div>

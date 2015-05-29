@@ -1,0 +1,11 @@
+.element {
+  background-color: #FFFFD8;
+  border-style: dotted;
+  border-width: thin;
+}
+
+.element-drop {
+  background-color: #C9FFC9;
+  border-style: solid;
+  border-width: medium;
+}

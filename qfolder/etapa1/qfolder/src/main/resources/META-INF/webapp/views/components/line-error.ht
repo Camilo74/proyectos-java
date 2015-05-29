@@ -1,0 +1,5 @@
+<div id="element-${id}">
+	<a>(x)</a>
+	<label>${hostip}</label>
+	<img src="/img/error.png" title="${title}"></img>
+</div>
