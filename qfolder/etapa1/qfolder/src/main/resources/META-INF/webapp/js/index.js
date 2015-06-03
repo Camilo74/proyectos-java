@@ -1,5 +1,6 @@
 function fileOnDragOver(holder){
 	holder.className = "element-drop";
+	event.preventDefault();
 	return false;
 }
 
@@ -8,24 +9,36 @@ function fileOnDragEnd(holder) {
 	return false;
 }
 
-function fileOnDrop(e) {
+function fileOnDrop(event,holder,host) {
 
-	this.className = '';
-	e.preventDefault();
+	event.preventDefault();
+	holder.className = "element";
 
-	var file = e.dataTransfer.files[0]; 
-	var reader = new FileReader();
+	var files = event.dataTransfer.files; 
+//	var reader = new FileReader();
+//	
+//	reader.onload = function(event) {
+//		holder.style.background = 'url(' + event.target.result + ') no-repeat center';
+//	};
+//	reader.readAsDataURL(file);
+
+    var newForm = jQuery('<form>', {
+        'action': host+"/ws/put",
+        'name': 'fileForm',
+        'method': 'post',
+        'enctype': 'multipart/form-data'
+    }).append(jQuery('<input>', {
+        'name': 'uploadedFile',
+        'value': files[0],
+        'type': 'file'
+    }));
+    newForm.submit();
 	
-	reader.onload = function(event) {
-		holder.style.background = 'url(' + event.target.result + ') no-repeat center';
-	};
-	reader.readAsDataURL(file);
-
 	return false;
 }
 
 function expand(id,hostip,hostname,osname,acount){
-	$.get("/views/components/line-ok-expand1.ht", function(contents) {
+	$.get("/views/components/line-ok-expand4.ht", function(contents) {
 		var files = "";
 		$.get(hostip+"/ws/all", function(data) {
 			var json = jQuery.parseJSON( data );

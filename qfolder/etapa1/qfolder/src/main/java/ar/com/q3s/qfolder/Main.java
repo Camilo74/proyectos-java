@@ -15,7 +15,7 @@ public class Main{
     }
     
     public void start() throws Exception{
-        server.start();        
+        server.start();
         server.join();
     }
 	
