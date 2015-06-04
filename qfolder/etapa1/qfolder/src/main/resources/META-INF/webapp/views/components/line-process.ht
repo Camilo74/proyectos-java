@@ -1,0 +1,5 @@
+<div id="element-${id}">
+	<a>(*)</a>
+	<label>${hostip}</label>
+	<img src="/img/progress.gif"></img>
+</div>
