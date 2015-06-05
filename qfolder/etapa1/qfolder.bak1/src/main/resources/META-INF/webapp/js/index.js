@@ -1,5 +1,5 @@
 function fileOnDragOver(holder){
-	holder.className = "element-drag";
+	holder.className = "element-drop";
 	event.preventDefault();
 	return false;
 }
@@ -9,61 +9,46 @@ function fileOnDragEnd(holder) {
 	return false;
 }
 
-function fileOnDrop(event,id,hostip,hostname,osname,acount) {
+function fileOnDrop(event,holder,host) {
 
 	event.preventDefault();
-	var holder = $("#content-"+id)[0];
-	holder.className = "element-drop";
+	holder.className = "element";
 
-	var files = event.dataTransfer.files;     
-	var fd = new FormData();
-    fd.append('uploadedFile', files[0]);
-    
-    var progress = jQuery('<progress>', {
-        id: "progress-"+id,
-        value: "0",
-        max: "100"
+	var files = event.dataTransfer.files; 
+
+	var input = jQuery('<input>', {
+    	id: 'inpfile2',
+        type: 'file',
+        name: 'uploadedFile'
     });
-    
-	$("#footer-"+id)[0].outerHTML = progress[0].outerHTML;
-	
-    $.ajax({
-        url: hostip+"/ws/put",
-        type: "POST",
-        data: fd,
-        processData: false, //Work around #1
-        contentType: false, //Work around #2
-        success: function(){
-            holder.className = "element";
-            var c = parseInt(acount);
-            expand(id,hostip,hostname,osname,++c);
-        },
-        error: function(){
-        	holder.className = "element";
-        	alert("Failed");
-        },
-        //Work around #3
-        xhr: function() {
-            myXhr = $.ajaxSettings.xhr();
-            if(myXhr.upload){
-                myXhr.upload.addEventListener('progress',function(evt) {
-			    if (evt.lengthComputable) {
-			        var percentComplete = (evt.loaded / evt.total) * 100;
-			        $('#progress-'+id)[0].value = percentComplete;
-			    }  
-			}, false);
-            } else {
-                console.log("Uploadress is not supported.");
-            }
-            return myXhr;
-        }
-    });
-	
+	input[0].files = files;
+
+	var progress = jQuery('<progress>', {
+    	id: 'progress',
+		value: "0",
+		max: "100"
+    });	
+	$("#elements").append(progress);
+
+    var newForm = jQuery('<form>', {
+        action: host+"/ws/put",
+        name: 'fileForm',
+        method: 'post',
+        enctype: 'multipart/form-data'
+    }).append(input);
+    newForm.submit();
 	return false;
 }
 
+function showProgress(evt) {
+    if (evt.lengthComputable) {
+        var percentComplete = (evt.loaded / evt.total) * 100;
+        $('#progressbar').progressbar("option", "value", percentComplete );
+    }  
+}
+
 function expand(id,hostip,hostname,osname,acount){
-	$.get("/views/components/line-ok-expand10.ht", function(contents) {
+	$.get("/views/components/line-ok-expand5.ht", function(contents) {
 		var files = "";
 		$.get(hostip+"/ws/all", function(data) {
 			var json = jQuery.parseJSON( data );
@@ -101,7 +86,7 @@ function open(host,filename){
 }
 
 function contract(id,hostip,hostname,osname,acount){
-	$.get("/views/components/line-ok8.ht", function(contents) {
+	$.get("/views/components/line-ok.ht", function(contents) {
 		$("#element-"+id)[0].outerHTML=contents
 			.replace(/\${id}/g,id)
 			.replace(/\${hostip}/g,hostip)
@@ -132,13 +117,8 @@ function refresh(){
 	return false;
 }
 
-function refreshElement(id,host){
-	$("#element-"+id).remove();
-	addElement(id,host);
-}
-
 function addElement(id,host){
-	$.get("/views/components/line-process9.ht", function(contents) {
+	$.get("/views/components/line-process.ht", function(contents) {
 		$("#elements").append(contents
 			.replace(/\${id}/g,id)
 			.replace(/\${hostip}/g,host)
@@ -147,7 +127,7 @@ function addElement(id,host){
     .always(function() {
     	$.get(host+"/ws/status", function(data) {
     		var json = jQuery.parseJSON( data );
-    		$.get("/views/components/line-ok8.ht", function(contents) {
+    		$.get("/views/components/line-ok.ht", function(contents) {
     			$("#element-"+id)[0].outerHTML=contents
     				.replace(/\${id}/g,id)
     				.replace(/\${hostip}/g,host)
@@ -158,7 +138,7 @@ function addElement(id,host){
     		$("#element-"+id).css("color","green");
     	})
         .fail(function(error) {
-    		$.get("/views/components/line-error9.ht", function(contents) {
+    		$.get("/views/components/line-error.ht", function(contents) {
     			var errMsg = "";
     			if(error.status == 0){
     				errMsg = "No se puede conectar con el host remoto";

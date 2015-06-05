@@ -6,6 +6,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -53,12 +55,21 @@ public class MyResource {
 			File temp = new File(System.getProperty("java.io.tmpdir") + File.separator + filename);
 			// --------------------
 			Client client =  new ResteasyClientBuilder()
-		    .establishConnectionTimeout(2, TimeUnit.SECONDS)
-		    .socketTimeout(2, TimeUnit.SECONDS)
+		    .establishConnectionTimeout(1, TimeUnit.SECONDS)
+		    .socketTimeout(1, TimeUnit.SECONDS)
 		    .build();
 			
 			WebTarget target = client.target(url);
 			Response response = target.request().get();
+			
+			if(response.getStatus() != Response.Status.OK.getStatusCode()){
+				String clazz = response.getHeaderString("class");
+				String message = response.getHeaderString("message");
+				//---------------------------------------------------
+				throw newException(clazz,message);
+			}
+			
+			
 			File remoteFile = response.readEntity(File.class);
 			response.close(); // You should close connections!
 			File dest = new File(temp.toURI().toURL().getPath());
@@ -76,6 +87,13 @@ public class MyResource {
 			return Response.serverError().entity(e.getMessage()).build();
 		}
 		
+	}
+
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	private Exception newException(String classname, String message) throws ClassNotFoundException, SecurityException, NoSuchMethodException, IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException {
+		Class clazz = Class.forName(classname);
+		Constructor<?> cons = clazz.getConstructor(String.class);
+		return (Exception) cons.newInstance(message);
 	}
 
 	private String getAvailableConnection(String[] hosts){
@@ -112,7 +130,6 @@ public class MyResource {
 	    mm.put("Content-Disposition",contDis);
 	    
 	    MultipartFormDataOutput mdo = new MultipartFormDataOutput();
-//	    mdo.addFormData("name", filename, MediaType.TEXT_PLAIN_TYPE);
 	    mdo.addFormData("uploadedFile", file, MediaType.APPLICATION_OCTET_STREAM_TYPE);
 	    mdo.getFormData().get("uploadedFile").getHeaders().put("Content-Disposition",contDis);
 	    GenericEntity<MultipartFormDataOutput> entity = new GenericEntity<MultipartFormDataOutput>(mdo) {};

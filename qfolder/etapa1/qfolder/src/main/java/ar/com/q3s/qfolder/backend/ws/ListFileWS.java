@@ -95,13 +95,13 @@ public class ListFileWS {
 	@Path("/put")
 	@Consumes("multipart/form-data")
 	public Response put(MultipartFormDataInput input) {
-		String fileName = "";
 		Map<String, List<InputPart>> uploadForm = input.getFormDataMap();
 		List<InputPart> inputParts = uploadForm.get("uploadedFile");
 		for (InputPart inputPart : inputParts) {
 		 try {
 			MultivaluedMap<String, String> header = inputPart.getHeaders();
-			fileName = getFileName(header);
+			String fileName = getFileName(header);
+			System.out.println("#################### " + fileName);
 			//convert the uploaded file to inputstream
 			InputStream inputStream = inputPart.getBody(InputStream.class,null);
 			byte [] bytes = IOUtils.toByteArray(inputStream);
@@ -113,7 +113,7 @@ public class ListFileWS {
 			  Response.serverError().entity(e.getMessage()).build();
 		  }
 		}
-		return Response.ok().entity("uploadFile is called, Uploaded file name : " + fileName).build();
+		return Response.ok().build();
 	}
 	
 	//-----------------------------------------------------------------------------------

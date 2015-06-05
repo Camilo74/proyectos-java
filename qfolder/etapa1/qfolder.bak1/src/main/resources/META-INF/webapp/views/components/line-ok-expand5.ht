@@ -8,5 +8,6 @@
 	<div id="element-${id}-files" class="element" ondragover="fileOnDragOver(this)" ondragend="fileOnDragEnd(this)" ondrop="fileOnDrop(event,this,'${hostip}')">
 		${files}
 	</div>
+	<progress id="progress-${id}" value="0" max="100"></progress>
 	<br>
 </div>

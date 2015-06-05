@@ -3,11 +3,8 @@ package ar.com.qestudio.agent.backend.rest;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.ws.rs.ApplicationPath;
-
 import org.jboss.resteasy.plugins.interceptors.CorsFilter;
 
-@ApplicationPath("/api")
 public class RegisterWebService extends javax.ws.rs.core.Application {
 	Set<Object> singletons;
 

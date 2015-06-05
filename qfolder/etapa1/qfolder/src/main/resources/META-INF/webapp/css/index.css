@@ -4,8 +4,24 @@
   border-width: thin;
 }
 
-.element-drop {
+.element-drag {
   background-color: #C9FFC9;
   border-style: solid;
   border-width: medium;
+}
+
+.element-drop {
+  background-color: #FFC9C9;
+  border-style: dotted;
+  border-width: thin;
+}
+
+progress {
+  width: 100%;
+  height: 10px;
+}
+
+.namespace {
+    color: #A6A5A5;
+    font-style:italic;
 }
