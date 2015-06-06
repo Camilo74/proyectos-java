@@ -1,4 +1,4 @@
 <div id="element-${id}">
 	<a><img src="/img/progress.gif"></img></a>
-	<a href="${hostip}/ws/status">${hostip}</a>
+	<a href="${hostip}">${hostip}</a>
 </div>

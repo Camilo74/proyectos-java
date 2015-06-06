@@ -1,7 +1,0 @@
-<div id="element-${id}">
-	<a href="#" onclick="expand('${id}','${hostip}','${hostname}','${osname}','${acount}')"><img src='/img/more.png'></img></a>
-	<a href="${hostip}/ws/status">${hostip}</a>
-	<label class="namespace">(${hostname}:${osname})</label>
-	<label>(${acount})</label>
-	<br>
-</div>
