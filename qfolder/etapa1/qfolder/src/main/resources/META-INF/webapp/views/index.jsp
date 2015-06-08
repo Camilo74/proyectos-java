@@ -12,19 +12,14 @@
 		
 		<link type="text/css" rel="stylesheet" href="/css/index.css">
 		<script type="text/javascript" src="/js/index.js"></script>
-		
-		<style>
-			#holder { border: 10px dashed #ccc; width: 300px; height: 300px; margin: 20px auto;}
-			#holder.hover { border: 10px dashed #333; }
-		</style>
-		
+				
 	</head>
 	
 	<body onload="reloadPage()">
 		<div id="elements"></div>
 		<hr><br>
 		<form id="formulario" name="formulario" action="/host/add" method="post" enctype="application/x-www-form-urlencoded" onsubmit="return refresh()">
-			<input name="host" type="text" placeholder="Ej. http://domain.local:9090" style="width: 300px" required pattern="https?://.+" />
+			<input name="host" type="text" placeholder="Ej. http://domain.local:9090" style="width: 300px" required pattern="https?://.+?:.+" oninvalid="this.setCustomValidity('Los valores ingresados no coinciden con el esperado')"/>
 			<input type="submit" value="Agregar"/>
 		</form>
 	</body>

@@ -71,7 +71,8 @@ function expand(id,hostip,username,hostname,osname){
 			files = "<ul type=disk>";
 		    for (var key in json.list) {
 		    	var filename = json.list[key];
-		    	files=files.concat("<li>").concat("<a href=\"javascript:open('" + hostip + "','" + filename + "')\">").concat(filename).concat("</a>").concat("</li>");
+		    	var filekey = "file-"+id+key;
+		    	files=files.concat("<li id=\""+filekey+"\">").concat("<a href=\"javascript:open('"+filekey+"','" + hostip + "','" + filename + "')\">").concat(filename).concat("</a>").concat("<label class='namespace'>").concat(" [12kb]").concat("</label>").concat("</li>");
 		    }
 		    files=files.concat("</ul>");
 		}).fail(function(error) {
@@ -94,8 +95,23 @@ function expand(id,hostip,username,hostname,osname){
 	})
 }
 
-function open(host,filename){
-	$.post("/client/open", {host: host, filename: filename}, function(data) {})
+function open(filekey,host,filename){
+	
+	var label=$("<li>",{
+		id: filekey
+	}).append($("<label>",{
+		class:'namespace'
+	}).text(filename + " [Damian]"));
+	
+	$("#"+filekey)[0].outerHTML = label[0].outerHTML;
+	$.post("/client/open", {host: host, filename: filename}, function(data) {
+		var a = $("<li>",{
+			id: filekey
+		}).append($("<a>",{
+			href: "javascript:open('"+filekey+"','"+host+"','"+filename+"')"
+		}).text(filename));
+		$("#"+filekey)[0].outerHTML=a[0].outerHTML;
+	})
 	.fail(function(data) {
 		//alert( "error:" + data );
 		window.location.href=host+"/ws/get/"+filename;

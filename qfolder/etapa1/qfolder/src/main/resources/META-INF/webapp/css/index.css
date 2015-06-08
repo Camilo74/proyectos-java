@@ -1,3 +1,15 @@
+input:required:invalid, input:focus:invalid {
+    background-image: url(/img/invalid.png);
+    background-position: right top;
+    background-repeat: no-repeat;
+}
+
+input:required:valid {
+    background-image: url(/img/valid.png);
+    background-position: right top;
+    background-repeat: no-repeat;
+}
+  
 .element {
   background-color: #FFFFD8;
   border-style: dotted;
