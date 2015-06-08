@@ -1,0 +1,4 @@
+<div id="element-${id}">
+	<a href="#" onclick="refreshElement('${id}','${hostip}')"><img src="/img/refresh.png" title="${title}"></img></img></a>
+	<a href="${hostip}">${hostip}</a>
+</div>
