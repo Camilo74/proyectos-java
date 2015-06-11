@@ -19,7 +19,7 @@
 		<div id="elements"></div>
 		<hr><br>
 		<form id="formulario" name="formulario" action="/host/add" method="post" enctype="application/x-www-form-urlencoded" onsubmit="return refresh()">
-			<input name="host" type="text" placeholder="Ej. http://domain.local:9090" style="width: 300px" required pattern="https?://.+?:.+" oninvalid="this.setCustomValidity('Los valores ingresados no coinciden con el esperado')"/>
+			<input name="host" type="text" placeholder="Ej. http://domain.local:9090" style="width: 300px" required pattern="https?://.+" />
 			<input type="submit" value="Agregar"/>
 		</form>
 	</body>

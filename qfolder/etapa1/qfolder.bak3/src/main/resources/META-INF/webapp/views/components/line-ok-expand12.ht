@@ -1,0 +1,12 @@
+<div id="element-${id}">
+	<div id="header-${id}">
+		<a href="#" onclick="contract('${id}','${hostip}','${username}','${hostname}','${osname}','${acount}')"><img src="/img/less.png"></img></a>
+		<a href="${hostip}">${hostip}</a>
+		<label class="namespace">(${username}:${hostname}:${osname})</label>
+		<label>(${acount})</label>
+	</div>
+	<div id="content-${id}" class="element" ondragover="fileOnDragOver(this)" ondragend="fileOnDragEnd(this)" ondrop="fileOnDrop(event,'${id}','${hostip}','${username}','${hostname}','${osname}')">
+		${files}
+	</div>
+	<br id="footer-${id}"/>
+</div>
