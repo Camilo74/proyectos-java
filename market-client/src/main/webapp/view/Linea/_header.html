@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>$message.get($params.controller)</title>
+		<link rel="stylesheet" type="text/css" href="/css/core.css">
+	</head>
+	<body>
+	
+		<h1>$message.get($params.controller)</h1>
+	
+		<h2>$message.get($params.action).toUpperCase()</h2>
+	
+		<hr>
+		
+		#if($instance.isMessage())
+			#if($instance.isOk())
+				<label class="message-ok">$message.get($instance.getMessage())</label>
+				<br><br>
+			#else
+				<label class="message-fail">$message.get($instance.getMessage())</label>
+				<br><br>
+			#end
+		#end

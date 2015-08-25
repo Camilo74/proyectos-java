@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>All Entities</title>
+		<link rel="stylesheet" type="text/css" href="/css/core.css">
+	</head>
+	<body>
+	
+		<h1>Entities</h1>
+	
+		<ul>
+			#foreach ($item in $params.entities)
+				<li><a href="e/$item.getSimpleName()/index">$item.getSimpleName()</a></li> 
+			#end
+		</ul>
+		
+	</body>
+</html>

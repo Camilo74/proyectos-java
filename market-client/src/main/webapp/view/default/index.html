@@ -1,0 +1,40 @@
+#parse("src/main/webapp/view/default/_header.html")
+	
+<a href="create">$message.get('create')</a>
+
+<table>
+	<thead>
+		<tr>
+			<th>-</th>
+			<th>-</th>
+			<th>-</th> 
+			#foreach ($field in $class.getDeclaredFields())
+				<th>$message.get($field.getName())</th> 
+			#end
+		</tr>
+	</thead>
+	<tbody>
+		#foreach ($item in $instance.getValue())
+			<tr>
+				#foreach ($field in $item.getClass().getDeclaredFields())
+					$field.setAccessible(true) 
+					#if ($field.getName() == "id")
+						<td><a href="show/$field.get($item)">$message.get('show')</a></td>
+						<td><a href="edit/$field.get($item)">$message.get('edit')</a></td>
+						<td><a href="remove/$field.get($item)">$message.get('remove')</a></td> 
+					#end
+					<td>$field.get($item)</td> 
+				#end
+			</tr>
+		#end
+	</tbody>
+</table>
+
+<br>
+<hr>
+
+<div style="width: 95%; text-align: end;">
+	<img src="/img/excel.png" title="$message.get('excel')"> | <img src="/img/csv.png" title="$message.get('csv')"> | <img src="/img/pdf.png" title="$message.get('pdf')"> | <img src="/img/chart.png" title="$message.get('chart')">
+</div>
+	
+#parse("src/main/webapp/view/default/_footer.html")
