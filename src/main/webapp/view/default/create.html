@@ -1,0 +1,11 @@
+#parse("src/main/webapp/view/default/_header.html")
+
+<a href="$params.context/$params.controller/index">$message.get('list')</a>
+
+<form action="save" method="post">
+	#parse("src/main/webapp/view/default/_form.html")
+	<br>
+	<input type="submit" value="$message.get('save')">
+</form>
+
+#parse("src/main/webapp/view/default/_footer.html")

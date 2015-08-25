@@ -1,0 +1,42 @@
+#parse("src/main/webapp/view/default/_header.html")
+
+<a href="../index">$message.get('list')</a> | <a href="../edit/$params.id">$message.get('edit')</a> | <a href="../create">$message.get('create')</a>
+
+<table>
+	<thead>
+		<tr>
+			<th>$message.get('key')</th>
+			<th>$message.get('value')</th>
+		</tr>
+	</thead>
+	<tbody>
+		#foreach ($field in $instance.getValue().getClass().getDeclaredFields())
+		<tr>
+			
+			$field.setAccessible(true)
+			<td class="texto-bold">$message.get($field.getName())</td>
+			<td>
+				#if ($field.getType().getSimpleName() == "Boolean") 
+					<input type="checkbox" name="firstname" value="$field.get($instance.getValue())" disabled 
+			             #if($field.get($instance.getValue()) == true)
+			             	checked
+			             #end>
+			        </input>
+				#elseif ($field.getType().getSimpleName() == "List")
+					<ul>
+						#foreach ($item in $field.get($instance.getValue()))
+							<li>
+								<a href="$params.context/$item.getClass().getSimpleName()/show/$item.getId()">$item</a>
+							</li>
+						#end
+					</ul> 
+				#else 
+					$field.get($instance.getValue()) 
+				#end
+			</td>
+		</tr>
+		#end
+	</tbody>
+</table>
+
+#parse("src/main/webapp/view/default/_footer.html")
