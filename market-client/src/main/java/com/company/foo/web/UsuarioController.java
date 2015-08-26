@@ -1,26 +1,20 @@
 package com.company.foo.web;
 
+import java.util.List;
 import java.util.Map;
 
 import com.company.foo.bo.BO;
 import com.company.foo.bo.DefaultBO;
 import com.company.foo.model.Entity;
-import com.company.foo.model.Linea;
-import com.company.foo.util.ClassFinder;
+import com.company.foo.model.Usuario;
 import com.company.foo.util.Response;
 
-public class LineaController implements Controller {
+public class UsuarioController implements Controller {
 
 	private BO bo;
 	
-	public LineaController(){}
-	
-	public LineaController(Class<?> clazz){
-		try {
-			bo = (BO) Class.forName(ClassFinder.PACK_FULL_PATH + ClassFinder.PACK_BO_TYPE + "." + clazz.getSimpleName() + "BO").newInstance();
-		} catch (Exception e) {
-			bo = new DefaultBO(clazz);
-		}
+	public UsuarioController(){
+		bo = new DefaultBO(Usuario.class);
 	}
 	
 	@Override
@@ -29,10 +23,29 @@ public class LineaController implements Controller {
 		return Response.ok(bo.list(clazz));
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public Response show(Class<?> clazz, Long id, Map<String,Object> params){
 		System.out.println("show - params:" + params);
-		return Response.ok().message("No existe el codigo");
+		
+		List<Usuario> usuarios = (List<Usuario>) bo.list(Usuario.class);
+		
+		Usuario us = null;
+		for (Usuario usuario : usuarios) {
+			if(usuario.getCodigo().equals(Long.valueOf((String)params.get("code")))){
+				us = usuario;
+				break;
+			}
+		}
+		
+		if(us == null){
+			us = new Usuario();
+			us.setCodigo(Long.valueOf((String)params.get("code")));
+			return Response.fail(us).redirect(clazz.getSimpleName(),"create", id, params).message("No existe el usuario registrado");
+		}else{
+			return Response.ok(us).redirect(clazz.getSimpleName(),"show", id, params).message("Usuario registrado");
+		}
+		
 	}
 
 	@Override

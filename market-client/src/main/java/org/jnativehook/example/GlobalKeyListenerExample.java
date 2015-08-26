@@ -13,7 +13,7 @@ import org.jnativehook.keyboard.NativeKeyListener;
 
 public class GlobalKeyListenerExample implements NativeKeyListener {
 	
-	private String rex = "11";
+	private String rex = "7790250";
 	private static long TIME_MILLS = 999l;
 	private Date lastUpdate = new Date();
 	private String sBuffer = "";
@@ -36,7 +36,7 @@ public class GlobalKeyListenerExample implements NativeKeyListener {
 			if(sBuffer.length() >= rex.length() && rex.equals(sBuffer.substring(0, rex.length()))){
 		        Thread th1 = new Thread() {
 		            public synchronized void run() {
-		            	Snippet173.getInstance().open("http://localhost:8080/e/Linea/show/1?code=" + sBuffer);
+		            	Snippet173.getInstance().open("http://localhost:8080/e/Usuario/show/1?code=" + sBuffer);
 		            }
 		        };
 		        th1.start();

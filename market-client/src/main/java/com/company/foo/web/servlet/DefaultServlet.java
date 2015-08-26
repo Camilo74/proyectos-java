@@ -77,13 +77,13 @@ public class DefaultServlet extends HttpServlet {
     		/*  create a context and add data */
     		VelocityContext context = new VelocityContext();
     		
-	    	params.put("id", idParam);
-	    	params.put("controller", controllerParam);
-	    	params.put("action", actionParam);
+	    	params.put("id", result.getId());
+	    	params.put("controller", result.getController() != null ? result.getController() : controllerParam);
+	    	params.put("action", result.getAction() != null ? result.getAction() : actionParam);
 	    	params.put("context", contextParam);
 	    	params.put("entities", ClassFinder.find(ClassFinder.PACK_FULL_PATH + ClassFinder.PACK_MODEL_TYPE));
         	
-	    	context.put("params", params);
+	    	context.put("params", result.getParams());
         	context.put("instance", result);
         	context.put("class",clazz);
         	context.put("controller",controller);
@@ -91,7 +91,7 @@ public class DefaultServlet extends HttpServlet {
         	context.put("ci",CI.class);
         	context.put("filter",clazz.newInstance());
         	
-        	MessageUtils message = new MessageUtils(controllerParam, actionParam);
+        	MessageUtils message = new MessageUtils(params.get("controller").toString(), params.get("action").toString());
         	context.put("message", message);
         	
         	/*  first, get and initialize an engine  */
@@ -103,9 +103,9 @@ public class DefaultServlet extends HttpServlet {
 	        /*  next, get the Template  */
 	        Template t = null;
 	        try {
-	        	t = ve.getTemplate( "src/main/webapp/view/" + controllerParam + "/" + actionParam + ".html" );
+	        	t = ve.getTemplate( "src/main/webapp/view/" + params.get("controller") + "/" + params.get("action") + ".html" );
 			} catch (Exception e) {
-				t = ve.getTemplate( "src/main/webapp/view/default/" + actionParam + ".html" );				
+				t = ve.getTemplate( "src/main/webapp/view/default/" + params.get("action") + ".html" );
 			}
         	
 	        /* now render the template into a StringWriter */
@@ -151,6 +151,7 @@ public class DefaultServlet extends HttpServlet {
 	    	response.sendRedirect(contextParam + result.buildURL());
 	    	
 		} catch (Exception e) {
+			e.printStackTrace();
 			super.doPost(request, response);
 		}
     	
