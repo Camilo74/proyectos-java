@@ -1,20 +1,18 @@
 package com.company.foo.web;
 
-import java.util.List;
 import java.util.Map;
 
-import com.company.foo.bo.BO;
-import com.company.foo.bo.DefaultBO;
+import com.company.foo.bo.UsuarioBO;
 import com.company.foo.model.Entity;
 import com.company.foo.model.Usuario;
 import com.company.foo.util.Response;
 
 public class UsuarioController implements Controller {
 
-	private BO bo;
+	private UsuarioBO bo;
 	
 	public UsuarioController(){
-		bo = new DefaultBO(Usuario.class);
+		bo = new UsuarioBO();
 	}
 	
 	@Override
@@ -23,29 +21,28 @@ public class UsuarioController implements Controller {
 		return Response.ok(bo.list(clazz));
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public Response show(Class<?> clazz, Long id, Map<String,Object> params){
 		System.out.println("show - params:" + params);
-		
-		List<Usuario> usuarios = (List<Usuario>) bo.list(Usuario.class);
-		
-		Usuario us = null;
-		for (Usuario usuario : usuarios) {
-			if(usuario.getCodigo().equals(Long.valueOf((String)params.get("code")))){
-				us = usuario;
-				break;
+		Object scodigo = params.get("code");
+			
+		if(scodigo==null){
+			if(id==null){
+				return Response.fail().redirect(clazz.getSimpleName(),"index", id, params).message("Parametros mal definidos");
+			}else{
+				return Response.ok(bo.get(clazz,id));				
+			}
+		}else{
+			Long lcodigo = Long.valueOf(scodigo.toString());
+			Usuario usuario = (Usuario) bo.getByCode(Usuario.class,lcodigo);
+			if(usuario==null){
+				usuario = new Usuario();
+				usuario.setCodigo(lcodigo);
+				return Response.fail(usuario).redirect(clazz.getSimpleName(),"create", id, params).message("No existe el usuario registrado");
+			}else{
+				return Response.ok(usuario).message("Usuario registrado");
 			}
 		}
-		
-		if(us == null){
-			us = new Usuario();
-			us.setCodigo(Long.valueOf((String)params.get("code")));
-			return Response.fail(us).redirect(clazz.getSimpleName(),"create", id, params).message("No existe el usuario registrado");
-		}else{
-			return Response.ok(us).redirect(clazz.getSimpleName(),"show", id, params).message("Usuario registrado");
-		}
-		
 	}
 
 	@Override

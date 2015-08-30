@@ -1,18 +1,23 @@
 package com.company.foo.model;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+
+import org.hibernate.annotations.Type;
 
 @javax.persistence.Entity
 public class Usuario implements Entity{
 
 	@Id
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(name = "USUARIO_ID")
 	private Long id;
 	
@@ -26,18 +31,15 @@ public class Usuario implements Entity{
 	private String email;
 	
 	@Column(name = "FECHA_ALTA")
-	private String fechaDeAlta;	
+	@Type(type="timestamp")
+	private Date fechaDeAlta;	
 	
-	@Column(name = "HABILITADO")
-	private Boolean habilitado;
-	
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "SEXO_ID", nullable = false)
-	private Sexo sexo;
+	@Column(name = "SEXO")
+	private Character sexo;
 
 	@OneToMany(fetch = FetchType.EAGER)
     @JoinColumn(name="USUARIO_ID")
-	private List<Categoria> categoria;
+	private List<Categoria> categorias;
 	
 	@Override
 	public Long getId() {
@@ -68,11 +70,11 @@ public class Usuario implements Entity{
 		this.email = email;
 	}
 
-	public Sexo getSexo() {
+	public Character getSexo() {
 		return sexo;
 	}
 
-	public void setSexo(Sexo sexo) {
+	public void setSexo(Character sexo) {
 		this.sexo = sexo;
 	}
 
@@ -80,28 +82,20 @@ public class Usuario implements Entity{
 		this.id = id;
 	}
 
-	public String getFechaDeAlta() {
+	public Date getFechaDeAlta() {
 		return fechaDeAlta;
 	}
 
-	public void setFechaDeAlta(String fechaDeAlta) {
+	public void setFechaDeAlta(Date fechaDeAlta) {
 		this.fechaDeAlta = fechaDeAlta;
 	}
 
-	public Boolean getHabilitado() {
-		return habilitado;
+	public List<Categoria> getCategorias() {
+		return categorias;
 	}
 
-	public void setHabilitado(Boolean habilitado) {
-		this.habilitado = habilitado;
-	}
-
-	public List<Categoria> getCategoria() {
-		return categoria;
-	}
-
-	public void setCategoria(List<Categoria> categoria) {
-		this.categoria = categoria;
+	public void setCategorias(List<Categoria> categorias) {
+		this.categorias = categorias;
 	}
 	
 	@Override

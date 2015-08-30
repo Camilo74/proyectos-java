@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import javax.persistence.GeneratedValue;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -37,124 +38,130 @@ import com.company.foo.web.DefaultController;
 public class DefaultServlet extends HttpServlet {
 	
 	private static final long serialVersionUID = -3324097373661605976L;
+	private static final String REDIRECT_MESSAGE_KEY = "messages";
 
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
     	try {
     		//get context URI
-    		Map<String,String> contextMap = getContextPath(request.getPathInfo().split("/"));
-    		String controllerParam = contextMap.get("controller");
+    		Map<String,String> contextMap = getContextPath(req.getPathInfo().split("/"));
+    		String entityParam = contextMap.get("entity");
     		String actionParam = contextMap.get("action");
-    		String contextParam = request.getServletPath();
+    		String contextParam = req.getServletPath();
     		Long idParam = contextMap.get("id") == null ? null : Long.valueOf(contextMap.get("id"));
-    		Class<?> clazz = Class.forName(ClassFinder.PACK_FULL_PATH + ClassFinder.PACK_MODEL_TYPE + "." + controllerParam);
-    		System.out.println("############### [GET] url: " + request.getPathInfo() + " - id:"+ idParam);
+    		//--------------------------------------------------------------
+    		Class<?> clazz = Class.forName(ClassFinder.PACK_FULL_PATH + ClassFinder.PACK_MODEL_TYPE + "." + entityParam);
+    		//--------------------------------------------------------------
+    		System.out.println("############### [GET] url: " + req.getPathInfo() + " - id:"+ idParam);
     		//--------------------------------------------------------------
         	Controller controller = null;
         	try {
-				controller = (Controller) Class.forName(ClassFinder.PACK_FULL_PATH + ClassFinder.PACK_CONTROLLER_TYPE + "." + controllerParam + "Controller").newInstance();
+				controller = (Controller) Class.forName(ClassFinder.PACK_FULL_PATH + ClassFinder.PACK_CONTROLLER_TYPE + "." + entityParam + "Controller").newInstance();
 			} catch (Exception e) {
 				e.printStackTrace();
 				controller = new DefaultController(clazz);
 			}
-
+        	//--------------------------------------------------------------
         	Map<String, Object> params = new HashMap<String,Object>();
-        	for(Entry<String,String[]> val : request.getParameterMap().entrySet()){
+        	//--------------------------------------------------------------
+        	for(Entry<String,String[]> val : req.getParameterMap().entrySet()){
         		params.put(val.getKey(), val.getValue()[0]);
         	}
-        	
+        	//--------------------------------------------------------------
         	Method method = controller.getClass().getMethod(actionParam,Class.class,Long.class,Map.class);
-        	Response result = (Response) method.invoke(controller,clazz,idParam,params);
-        	
-        	HttpSession session = request.getSession(true);
-        	Response throwResponse = (Response) session.getAttribute("throw_response");
-        	if(throwResponse != null){
-        		result.setId(throwResponse.getId());
-        		result.setMessage(throwResponse.getMessage());
-        		result.setParams(throwResponse.getParams());
-        		session.removeAttribute("throw_response");
+        	Response response = (Response) method.invoke(controller,clazz,idParam,params);
+        	//--------------------------------------------------------------
+			params.putAll(response.getParams());
+        	//--------------------------------------------------------------
+			params.put("id", response.getId() != null ? response.getId() : idParam);
+    		params.put("entity", response.getEntity() != null ? response.getEntity() : entityParam);
+    		params.put("action", response.getAction() != null ? response.getAction() : actionParam);
+        	params.put("context", contextParam);
+        	params.put("entities", ClassFinder.find(ClassFinder.PACK_FULL_PATH + ClassFinder.PACK_MODEL_TYPE));
+        	params.put("clazz",clazz);
+        	//--------------------------------------------------------------
+        	HttpSession session = req.getSession(true);
+        	Object rmessages = session.getAttribute(REDIRECT_MESSAGE_KEY);
+        	if(rmessages != null){
+        		List<String> messages = (List<String>)rmessages;
+        		for(String msg : messages){
+        			response.addMessage(msg);        			
+        		}
+        		session.removeAttribute(REDIRECT_MESSAGE_KEY);
         	}
-        	
-    		/*  create a context and add data */
+        	//--------------------------------------------------------------
     		VelocityContext context = new VelocityContext();
-    		
-	    	params.put("id", result.getId());
-	    	params.put("controller", result.getController() != null ? result.getController() : controllerParam);
-	    	params.put("action", result.getAction() != null ? result.getAction() : actionParam);
-	    	params.put("context", contextParam);
-	    	params.put("entities", ClassFinder.find(ClassFinder.PACK_FULL_PATH + ClassFinder.PACK_MODEL_TYPE));
-        	
-	    	context.put("params", result.getParams());
-        	context.put("instance", result);
-        	context.put("class",clazz);
+    		params.put("instance", response);
+        	context.put("params", params);
+        	context.put("ci",CI.class);
         	context.put("controller",controller);
         	context.put("classFinder",ClassFinder.class);
-        	context.put("ci",CI.class);
-        	context.put("filter",clazz.newInstance());
-        	
-        	MessageUtils message = new MessageUtils(params.get("controller").toString(), params.get("action").toString());
-        	context.put("message", message);
-        	
-        	/*  first, get and initialize an engine  */
-	        VelocityEngine ve = new VelocityEngine();
-	        EventCartridge ec = new EventCartridge();
-	        ec.addEventHandler(new InvalidReferenceEventHandlerCustom());
-	        ec.attachToContext( context );
-	        ve.init();
-	        /*  next, get the Template  */
-	        Template t = null;
-	        try {
-	        	t = ve.getTemplate( "src/main/webapp/view/" + params.get("controller") + "/" + params.get("action") + ".html" );
-			} catch (Exception e) {
-				t = ve.getTemplate( "src/main/webapp/view/default/" + params.get("action") + ".html" );
-			}
-        	
-	        /* now render the template into a StringWriter */
-	        StringWriter writer = new StringWriter();
-	        t.merge( context, writer );
-	        /* show the World */
-	        response.getWriter().print(writer.toString());
-	        
+        	context.put("message", new MessageUtils(params.get("entity").toString(), params.get("action").toString()));
+        	//--------------------------------------------------------------
+            VelocityEngine ve = new VelocityEngine();
+            EventCartridge ec = new EventCartridge();
+            ec.addEventHandler(new InvalidReferenceEventHandlerCustom());
+            ec.attachToContext(context);
+            ve.init();
+            //--------------------------------------------------------------
+            Template template = null;
+            try {
+            	template = ve.getTemplate( "src/main/webapp/view/" + params.get("entity") + "/" + params.get("action") + ".html" );
+    		} catch (Exception e) {
+    			template = ve.getTemplate( "src/main/webapp/view/default/" + params.get("action") + ".html" );
+    		}
+            //--------------------------------------------------------------
+            StringWriter writer = new StringWriter();
+            template.merge( context, writer );
+            //--------------------------------------------------------------
+	        resp.getWriter().print(writer.toString());
 		} catch (Exception e) {
-			super.doGet(request, response);
+			e.printStackTrace();
+			super.doGet(req, resp);
 		}    	
     }
 
 	@Override
-	protected void doPost(HttpServletRequest request, HttpServletResponse response)	throws ServletException, IOException {
+	protected void doPost(HttpServletRequest req, HttpServletResponse resp)	throws ServletException, IOException {
 		try {
-
-			//get context URI
-			Map<String,String> contextMap = getContextPath(request.getPathInfo().split("/"));
-			String controllerParam = contextMap.get("controller");
-			String actionParam = contextMap.get("action");
-			String contextParam = request.getServletPath();
-			Long idParam = contextMap.get("id") == null ? null : Long.valueOf(contextMap.get("id"));
-			Class<?> clazz = Class.forName(ClassFinder.PACK_FULL_PATH + ClassFinder.PACK_MODEL_TYPE + "." + controllerParam);
-			System.out.println("############### [POST] url: " + request.getPathInfo() + " - id:"+ idParam);
-			//--------------------------------------------------------------
-	    	Controller controller = null;
-	    	try {
-				controller = (Controller) Class.forName(ClassFinder.PACK_FULL_PATH + ClassFinder.PACK_CONTROLLER_TYPE + "." + controllerParam + "Controller").newInstance();
+			//post context URI
+    		Map<String,String> contextMap = getContextPath(req.getPathInfo().split("/"));
+    		String entityParam = contextMap.get("entity");
+    		String actionParam = contextMap.get("action");
+    		String contextParam = req.getServletPath();
+    		Long idParam = contextMap.get("id") == null ? null : Long.valueOf(contextMap.get("id"));
+    		//--------------------------------------------------------------
+    		Class<?> clazz = Class.forName(ClassFinder.PACK_FULL_PATH + ClassFinder.PACK_MODEL_TYPE + "." + entityParam);
+    		//--------------------------------------------------------------
+    		System.out.println("############### [POST] url: " + req.getPathInfo() + " - id:"+ idParam);
+    		//--------------------------------------------------------------
+        	Controller controller = null;
+        	try {
+				controller = (Controller) Class.forName(ClassFinder.PACK_FULL_PATH + ClassFinder.PACK_CONTROLLER_TYPE + "." + entityParam + "Controller").newInstance();
 			} catch (Exception e) {
+				e.printStackTrace();
 				controller = new DefaultController(clazz);
 			}
-	
-	    	Map<String, Object> params = new HashMap<String,Object>();
-	    	for(Entry<String,String[]> val : request.getParameterMap().entrySet()){
-	    		params.put(val.getKey(), val.getValue()[0]);
-	    	}
-	    	
+        	//--------------------------------------------------------------
+        	Map<String, Object> params = new HashMap<String,Object>();
+        	//--------------------------------------------------------------
+        	for(Entry<String,String[]> val : req.getParameterMap().entrySet()){
+        		params.put(val.getKey(), val.getValue()[0]);
+        	}
+        	//--------------------------------------------------------------
 	    	Method method = controller.getClass().getMethod(actionParam,Entity.class,Map.class);
-	    	Response result = (Response) method.invoke(controller,createInstance(clazz,params),params);
-	    	HttpSession session = request.getSession(true);
-	    	session.setAttribute("throw_response", result);
-	    	response.sendRedirect(contextParam + result.buildURL());
-	    	
+	    	Response response = (Response) method.invoke(controller,createInstance(clazz,params),params);
+	    	//--------------------------------------------------------------
+			params.put("id", response.getId() != null ? response.getId() : idParam);
+    		params.put("entity", response.getEntity() != null ? response.getEntity() : entityParam);
+    		params.put("action", response.getAction() != null ? response.getAction() : actionParam);
+    		//--------------------------------------------------------------
+	    	HttpSession session = req.getSession(true);
+	    	session.setAttribute(REDIRECT_MESSAGE_KEY, response.getMessages());
+	    	resp.sendRedirect(contextParam + "/" + params.get("entity") + "/" + params.get("action") + "/" + params.get("id"));
 		} catch (Exception e) {
 			e.printStackTrace();
-			super.doPost(request, response);
+			super.doPost(req, resp);
 		}
-    	
 	}
 	
 	private Entity createInstance(Class<?> clazz, Map<String,Object> params){
@@ -167,12 +174,15 @@ public class DefaultServlet extends HttpServlet {
 						if( value.indexOf(".") == -1){
 							Field field = clazz.getDeclaredField(element.getKey());
 							field.setAccessible(true);
+							System.out.println("### " + field.getAnnotation(javax.persistence.GeneratedValue.class));
 							if(field.getType().getSimpleName().equals("Boolean")){
 								field.set(instance, field.getType().getConstructor(new Class[]{String.class}).newInstance("on".equals(element.getValue()) ? "true" : "false"));
 							}else if(field.getType().getSimpleName().equals("Date")){
 								SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
 								Date date = formatter.parse(element.getValue().toString());
 								field.set(instance, date);//2015-01-01T01:00
+							}else if(field.getType().getSimpleName().equals("Character")){
+								field.set(instance,element.getValue().toString().toCharArray()[0]);
 							}else{
 								field.set(instance, field.getType().getConstructor(new Class[]{String.class}).newInstance(element.getValue()));								
 							}
@@ -206,14 +216,14 @@ public class DefaultServlet extends HttpServlet {
 	private Map<String, String> getContextPath(String[] urlPathInfo) {
 		int cdor = 1;
 		Map<String,String> map = new HashMap<String,String>();
-		for (String item : new String[]{"controller","action","id"}) {
+		for (String item : new String[]{"entity","action","id"}) {
 			try {
 				map.put(item, urlPathInfo[cdor++]);
 			} catch (Exception e) {
 				map.put(item, null);
 			}
 		}
-		map.put("last", urlPathInfo[urlPathInfo.length-1]);
+		//map.put("last", urlPathInfo[urlPathInfo.length-1]);
 		return map;
 	}
 	

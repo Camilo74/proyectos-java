@@ -1,5 +1,8 @@
 package com.company.foo.util;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Response {
@@ -7,10 +10,10 @@ public class Response {
 	private Boolean ok;
 	private Long id;
 	private Object value;
-	private String controller;
+	private String entity;
 	private String action;
-	private Map<String,Object> params;
-	private String message;
+	private Map<String,Object> params = new HashMap<String, Object>();
+	private List<String> messages = new ArrayList<String>();
 		
 	public Response(Boolean ok){
 		this.ok = ok;
@@ -46,8 +49,8 @@ public class Response {
 		return this;
 	}
 	
-	public Response controller(String controller){
-		this.controller = controller;
+	public Response entity(String entity){
+		this.entity = entity;
 		return this;
 	}
 	
@@ -56,19 +59,21 @@ public class Response {
 		return this;
 	}
 	
-	public Response params(Map<String,Object> params){
-		this.params = params;
-		return this;
-	}
+//	public Response params(Map<String,Object> params){
+//		this.params = params;
+//		entity = params.get("entity").toString();
+//		action = params.get("action").toString();
+//		return this;
+//	}
 
 	public Response message(String message){
-		this.message = message;
+		addMessage(message);
 		return this;
 	}
 
-	public Response redirect(String controller, String action, Long id, Map<String,Object> params){
+	public Response redirect(String entity, String action, Long id, Map<String,Object> params){
 		this.id = id;
-		this.controller = controller;
+		this.entity = entity;
 		this.action = action;
 		this.params = params;
 		return this;
@@ -94,12 +99,12 @@ public class Response {
 		this.value = value;
 	}
 
-	public String getController() {
-		return controller;
+	public String getEntity() {
+		return entity;
 	}
 
-	public void setController(String controller) {
-		this.controller = controller;
+	public void setEntity(String entity) {
+		this.entity = entity;
 	}
 
 	public String getAction() {
@@ -118,12 +123,12 @@ public class Response {
 		this.params = params;
 	}
 
-	public String getMessage() {
-		return message;
+	public List<String> getMessages() {
+		return messages;
 	}
-
-	public void setMessage(String message) {
-		this.message = message;
+	
+	public void setMessages(List<String> messages) {
+		this.messages = messages;
 	}
 
 	public Long getId() {
@@ -138,12 +143,20 @@ public class Response {
 		return action != null;
 	}
 	
-	public Boolean isMessage(){
-		return message != null;
+	public Boolean hasMessage(){
+		return !messages.isEmpty();
+	}
+
+	public void addMessage(Object message){
+		if(message != null){
+			addMessage(message.toString());			
+		}
 	}
 	
-	public String buildURL(){
-		return "/" + controller + "/" + action + "/" + id;
+	public void addMessage(String message){
+		if(message != null){
+			messages.add(message);			
+		}
 	}
 	
 }

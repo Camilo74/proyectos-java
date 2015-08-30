@@ -22,25 +22,25 @@ public class DefaultController implements Controller {
 	
 	@Override
 	public Response index(Class<?> clazz, Long id, Map<String,Object> params){
-		System.out.println("index - params:" + params);
+		System.out.println("index ["+this.getClass().getSimpleName()+"]- params:" + params);
 		return Response.ok(bo.list(clazz));
 	}
 
 	@Override
 	public Response show(Class<?> clazz, Long id, Map<String,Object> params){
-		System.out.println("show - params:" + params);
+		System.out.println("show ["+this.getClass().getSimpleName()+"]- params:" + params);
 		return Response.ok(bo.get(clazz,id));
 	}
 
 	@Override
 	public Response edit(Class<?> clazz, Long id, Map<String,Object> params){
-		System.out.println("edit - params:" + params);
+		System.out.println("edit ["+this.getClass().getSimpleName()+"]- params:" + params);
 		return Response.ok(bo.get(clazz,id));
 	}
 
 	@Override
 	public Response create(Class<?> clazz, Long id, Map<String,Object> params){
-		System.out.println("create - params:" + params);
+		System.out.println("create ["+this.getClass().getSimpleName()+"]- params:" + params);
 		try {
 			return Response.ok(clazz.newInstance());
 		} catch (Exception e) {
@@ -50,21 +50,22 @@ public class DefaultController implements Controller {
 	
 	@Override
 	public Response remove(Class<?> clazz, Long id, Map<String,Object> params){
-		System.out.println("remove - params:" + params);
+		System.out.println("remove ["+this.getClass().getSimpleName()+"]- params:" + params);
+		Entity entity = (Entity)bo.get(clazz,id);
 		bo.remove(clazz,id);
-		return Response.ok().redirect(clazz.getSimpleName(),"show", id, params).message("Eliminado correctamente");
+		return Response.ok(entity).message("Eliminado correctamente");
 	}
 	
 	@Override
 	public Response save(Entity entity, Map<String,Object> params){
-		System.out.println("save - params:" + params);
+		System.out.println("save ["+this.getClass().getSimpleName()+"]- params:" + params);
 		bo.save(entity);
 		return Response.ok().redirect(entity.getClass().getSimpleName(),"show", entity.getId(), params).message("Creado exitosamente");
 	}
 
 	@Override
 	public Response update(Entity entity, Map<String,Object> params){
-		System.out.println("update - params:" + params);
+		System.out.println("update ["+this.getClass().getSimpleName()+"]- params:" + params);
 		bo.update(entity);
 		return Response.ok().redirect(entity.getClass().getSimpleName(),"show", entity.getId(), params).message("Modificado exitosamente");
 	}

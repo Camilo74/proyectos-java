@@ -8,13 +8,13 @@
 			<th>-</th>
 			<th>-</th>
 			<th>-</th> 
-			#foreach ($field in $class.getDeclaredFields())
+			#foreach ($field in $params.clazz.getDeclaredFields())
 				<th>$message.get($field.getName())</th> 
 			#end
 		</tr>
 	</thead>
 	<tbody>
-		#foreach ($item in $instance.getValue())
+		#foreach ($item in $params.instance.getValue())
 			<tr>
 				#foreach ($field in $item.getClass().getDeclaredFields())
 					$field.setAccessible(true) 

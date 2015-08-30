@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>$message.get($params.controller)</title>
+		<title>$message.get($params.entity)</title>
 		<link rel="stylesheet" type="text/css" href="/css/core.css">
 	</head>
 	<body>
 	
-		<h1>$message.get($params.controller)</h1>
+		<h1>$message.get($params.entity)</h1>
 	
 		#foreach ($item in $params.entities)
 			<a href="$params.context/$item.getSimpleName()/index">$message.get($item.getSimpleName())</a> 
@@ -20,12 +20,16 @@
 	
 		<hr>
 		
-		#if($instance.isMessage())
-			#if($instance.isOk())
-				<label class="message-ok">$message.get($instance.getMessage())</label>
-				<br><br>
+		#if($params.instance.hasMessage())
+			#if($params.instance.isOk())
+				#foreach ($msg in $params.instance.messages)
+					<label class="message-ok">$message.get($msg)</label>
+					<br><br>
+				#end
 			#else
-				<label class="message-fail">$message.get($instance.getMessage())</label>
-				<br><br>
+				#foreach ($msg in $params.instance.messages)
+					<label class="message-fail">$message.get($msg)</label>
+					<br><br>
+				#end
 			#end
 		#end

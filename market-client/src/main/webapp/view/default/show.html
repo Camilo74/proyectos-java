@@ -10,28 +10,28 @@
 		</tr>
 	</thead>
 	<tbody>
-		#foreach ($field in $instance.getValue().getClass().getDeclaredFields())
+		#foreach ($field in $params.instance.getValue().getClass().getDeclaredFields())
 		<tr>
 			
 			$field.setAccessible(true)
 			<td class="texto-bold">$message.get($field.getName())</td>
 			<td>
 				#if ($field.getType().getSimpleName() == "Boolean") 
-					<input type="checkbox" name="firstname" value="$field.get($instance.getValue())" disabled 
-			             #if($field.get($instance.getValue()) == true)
+					<input type="checkbox" name="firstname" value="$field.get($params.instance.getValue())" disabled 
+			             #if($field.get($params.instance.getValue()) == true)
 			             	checked
 			             #end>
 			        </input>
 				#elseif ($field.getType().getSimpleName() == "List")
 					<ul>
-						#foreach ($item in $field.get($instance.getValue()))
+						#foreach ($item in $field.get($params.instance.getValue()))
 							<li>
 								<a href="$params.context/$item.getClass().getSimpleName()/show/$item.getId()">$item</a>
 							</li>
 						#end
 					</ul> 
 				#else 
-					$field.get($instance.getValue()) 
+					$field.get($params.instance.getValue()) 
 				#end
 			</td>
 		</tr>

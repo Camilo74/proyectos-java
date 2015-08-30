@@ -13,30 +13,35 @@
 		</tr>
 	</thead>
 	<tbody>
-		#foreach ($field in $instance.getValue().getClass().getDeclaredFields())
+		#foreach ($field in $params.instance.getValue().getClass().getDeclaredFields())
 			<tr>
 				<td class="texto-bold">$message.get($field.getName())</td>
 				<td> 
 					$field.setAccessible(true)
 					#if($field.getType().getSimpleName().equals("String"))
-						<input type="text" name="$field.getName()" style="width: 98%" class="input-form" value="$field.get($instance.getValue())"></input> 
+						<input type="text" name="$field.getName()" style="width: 98%" class="input-form" value="$field.get($params.instance.getValue())"></input>
+					#elseif($field.getType().getSimpleName().equals("Character"))
+						<input type="text" name="$field.getName()" style="width: 98%" class="input-form" value="$field.get($params.instance.getValue())" maxlength="1"></input> 
 					#elseif ($field.getType().getSimpleName() == "Long" || $field.getType().getSimpleName() == "Integer")
-						<input type="number" name="$field.getName()" style="width: 98%" class="input-form" value="$field.get($instance.getValue())"></input> 
+						#if($field.getName().equals("id"))
+							siii
+						#end
+						<input type="number" name="$field.getName()" style="width: 98%" class="input-form" value="$field.get($params.instance.getValue())"></input> 
 					#elseif ($field.getType().getSimpleName() == "Date")
-						#if($field.get($instance.getValue()) == "")
+						#if($field.get($params.instance.getValue()) == "")
 							<input type="datetime-local" name="$field.getName()" style="width: 98%" class="input-form"></input>
 						#else
-							<input type="datetime-local" name="$field.getName()" style="width: 98%" class="input-form" value="$ci.n("java.text.SimpleDateFormat","yyyy-MM-dd'T'HH:mm").format($field.get($instance.getValue()))"></input>						
+							<input type="datetime-local" name="$field.getName()" style="width: 98%" class="input-form" value="$ci.n("java.text.SimpleDateFormat","yyyy-MM-dd'T'HH:mm").format($field.get($params.instance.getValue()))"></input>						
 						#end
 					#elseif ($field.getType().getSimpleName() == "Boolean")
 						<input type="checkbox" name="$field.getName()"  
-							#if($field.get($instance.getValue()) == true)
+							#if($field.get($params.instance.getValue()) == true)
 								checked
 		      				#end>
 		      			</input>
 		      		#elseif ($field.getType().getSimpleName() == "List")
 						<ul>
-							#foreach ($item in $field.get($instance.getValue()))
+							#foreach ($item in $field.get($params.instance.getValue()))
 								<li><a href="$params.context/$item.getClass().getSimpleName()/show/$item.getId()">$item</a></li>
 							#end
 						</ul>
@@ -61,7 +66,7 @@
 													#if ($fi.getName() == "id")
 														<td>
 															<input type="checkbox"
-																#if(!$field.get($instance.getValue()).isEmpty() && $field.get($instance.getValue()).contains($it))
+																#if(!$field.get($params.instance.getValue()).isEmpty() && $field.get($params.instance.getValue()).contains($it))
 																	checked
 																#end
 															name="$field.getName().$fi.getName().$fi.get($it)" value="$fi.get($it)"></input>
@@ -80,7 +85,7 @@
 						</div>
 						<!-- fin modal -->
 					#elseif ($classFinder.exist($field.getType()))
-					 	$field.get($instance.getValue())
+					 	$field.get($params.instance.getValue())
 					 	<!-- modal -->
 						<div id="overlay-simple-$field.getName()" class="overlay">
 							<div class="overlay-div">
@@ -102,7 +107,7 @@
 													#if ($fi.getName() == "id")
 														<td>
 															<input type="radio"
-																#if($it.equals($field.get($instance.getValue())))
+																#if($it.equals($field.get($params.instance.getValue())))
 																	checked
 																#end
 															name="$field.getName().$fi.getName()" value="$fi.get($it)"></input>
@@ -121,7 +126,7 @@
 						</div>
 						<!-- fin modal -->
 					#else
-						$field.get($instance.getValue()) 
+						$field.get($params.instance.getValue()) 
 					#end
 				</td>
 			</tr>
