@@ -148,10 +148,9 @@ a.submit:active {
 }
 
 .BoxGeneral{
-height: 500px;
+/*height: 500px;*/
 width: 780px;
 margin: 0 auto;
-
 }
 
 .BoxHeader{

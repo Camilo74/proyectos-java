@@ -174,7 +174,6 @@ public class DefaultServlet extends HttpServlet {
 						if( value.indexOf(".") == -1){
 							Field field = clazz.getDeclaredField(element.getKey());
 							field.setAccessible(true);
-							System.out.println("### " + field.getAnnotation(javax.persistence.GeneratedValue.class));
 							if(field.getType().getSimpleName().equals("Boolean")){
 								field.set(instance, field.getType().getConstructor(new Class[]{String.class}).newInstance("on".equals(element.getValue()) ? "true" : "false"));
 							}else if(field.getType().getSimpleName().equals("Date")){
@@ -218,7 +217,9 @@ public class DefaultServlet extends HttpServlet {
 		Map<String,String> map = new HashMap<String,String>();
 		for (String item : new String[]{"entity","action","id"}) {
 			try {
-				map.put(item, urlPathInfo[cdor++]);
+				String url = urlPathInfo[cdor++];
+				System.out.println("### urlPathInfo[cdor++]" + url); 
+				map.put(item, url);
 			} catch (Exception e) {
 				map.put(item, null);
 			}

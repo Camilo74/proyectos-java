@@ -13,8 +13,8 @@ import org.jnativehook.keyboard.NativeKeyListener;
 
 public class GlobalKeyListenerExample implements NativeKeyListener {
 	
-	private String rex = "11";
-	private static long TIME_MILLS = 999l;
+	private String rex = "7790250";
+	private static long TIME_MILLS = 100l;
 	private Date lastUpdate = new Date();
 	private String sBuffer = "";
 	

@@ -24,9 +24,10 @@
 						<input type="text" name="$field.getName()" style="width: 98%" class="input-form" value="$field.get($params.instance.getValue())" maxlength="1"></input> 
 					#elseif ($field.getType().getSimpleName() == "Long" || $field.getType().getSimpleName() == "Integer")
 						#if($field.getName().equals("id"))
-							siii
+							$field.get($params.instance.getValue())
+						#else
+							<input type="number" name="$field.getName()" style="width: 98%" class="input-form" value="$field.get($params.instance.getValue())"></input> 						
 						#end
-						<input type="number" name="$field.getName()" style="width: 98%" class="input-form" value="$field.get($params.instance.getValue())"></input> 
 					#elseif ($field.getType().getSimpleName() == "Date")
 						#if($field.get($params.instance.getValue()) == "")
 							<input type="datetime-local" name="$field.getName()" style="width: 98%" class="input-form"></input>

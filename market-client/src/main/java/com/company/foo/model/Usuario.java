@@ -1,5 +1,7 @@
 package com.company.foo.model;
 
+import java.text.Format;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -86,6 +88,11 @@ public class Usuario implements Entity{
 		return fechaDeAlta;
 	}
 
+	public String getFechaDeAltaAsString() {
+		Format formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		return formatter.format(fechaDeAlta);
+	}
+	
 	public void setFechaDeAlta(Date fechaDeAlta) {
 		this.fechaDeAlta = fechaDeAlta;
 	}

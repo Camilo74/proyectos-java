@@ -78,6 +78,12 @@ public class UsuarioController implements Controller {
 	@Override
 	public Response update(Entity entity, Map<String,Object> params){
 		System.out.println("update - params:" + params);
+//		Usuario usuario = (Usuario) entity;
+//		if(params.get("sexof") != null){
+//			usuario.setSexo('f');
+//		}else{
+//			usuario.setSexo('m');
+//		}
 		bo.update(entity);
 		return Response.ok().redirect(entity.getClass().getSimpleName(),"show", entity.getId(), params).message("Modificado exitosamente");
 	}

@@ -22,7 +22,7 @@
 			
 			<div style="width: 480px; float: left;">
 				<h1>$params.instance.value.nombre.toUpperCase()</h1>
-				<p><b style="color: #ff5003;">Fecha de alta:</b> $params.instance.value.fechaDeAlta</p><br>
+				<p><b style="color: #ff5003;">Fecha de alta:</b> $params.instance.value.getFechaDeAltaAsString()</p><br>
 				<p><b style="color: #ff5003;">Mail:</b>  $params.instance.value.email</p><br>
 				<p><b style="color: #ff5003;">Sexo:</b>  $message.get("$params.instance.value.sexo")</p><br>
 				<p><b style="color: #ff5003;">Categorías:</b>  $params.instance.value.categorias</p><br>
@@ -31,8 +31,8 @@
 	</div>
 
 	<div class="BoxFooter">
-		<a class="submit" href="/e/Usuario/edit/$params.id">$message.get("edit")</a>
-		<a class="submit" href="/e/Usuario/remove/$params.id">$message.get("remove")</a>
+		<a class="submit" href="/e/Usuario/edit/$params.instance.value.id">$message.get("edit").toUpperCase()</a>
+		<a class="submit" href="/e/Usuario/remove/$params.instance.value.id">$message.get("remove").toUpperCase()</a>
 	</div>	
 	
 </div>
