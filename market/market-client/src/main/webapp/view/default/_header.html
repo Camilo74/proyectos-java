@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>$message.get($params.entity)</title>
+		<link rel="stylesheet" type="text/css" href="/css/core.css">
+	</head>
+	<body>
+	
+		<h1>$message.get($params.entity)</h1>
+	
+		#foreach ($item in $params.entities)
+			<a href="$params.context/$item.getSimpleName()/index">$message.get($item.getSimpleName())</a> 
+		#end
+	
+		<h2>$message.get($params.action).toUpperCase()</h2>
+	
+<!-- 		#foreach ($mapEntry in $params.entrySet()) -->
+<!-- 			$mapEntry.key:$mapEntry.value;  -->
+<!-- 		#end -->
+	
+		<hr>
+		
+		#if($params.instance.hasMessage())
+			#if($params.instance.isOk())
+				#foreach ($msg in $params.instance.messages)
+					<label class="message-ok">$message.get($msg)</label>
+					<br><br>
+				#end
+			#else
+				#foreach ($msg in $params.instance.messages)
+					<label class="message-fail">$message.get($msg)</label>
+					<br><br>
+				#end
+			#end
+		#end

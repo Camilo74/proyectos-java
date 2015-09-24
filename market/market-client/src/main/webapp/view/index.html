@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Entidades</title>
+		<link rel="stylesheet" type="text/css" href="/css/core.css">
+	</head>
+	<body>
+	
+		<h1>Entidades</h1>
+	
+		<ul>
+			#foreach ($item in $params.entities)
+				<li>$item.getSimpleName() [<a href="e/$item.getSimpleName()/index">html</a> | <a href="e/$item.getSimpleName()/index">ws</a>]</li> 
+			#end
+		</ul>
+		
+	</body>
+</html>

@@ -1,0 +1,136 @@
+<script>
+	function overlay(id) {
+		el = document.getElementById(id);
+		el.style.visibility = (el.style.visibility == "visible") ? "hidden"	: "visible";
+	}
+</script>
+
+<table>
+	<thead>
+		<tr>
+			<th>$message.get('key')</th>
+			<th>$message.get('value')</th>
+		</tr>
+	</thead>
+	<tbody>
+		#foreach ($field in $params.instance.getValue().getClass().getDeclaredFields())
+			<tr>
+				<td class="texto-bold">$message.get($field.getName())</td>
+				<td> 
+					$field.setAccessible(true)
+					#if($field.getType().getSimpleName().equals("String"))
+						<input type="text" name="$field.getName()" style="width: 98%" class="input-form" value="$field.get($params.instance.getValue())"></input>
+					#elseif($field.getType().getSimpleName().equals("Character"))
+						<input type="text" name="$field.getName()" style="width: 98%" class="input-form" value="$field.get($params.instance.getValue())" maxlength="1"></input> 
+					#elseif ($field.getType().getSimpleName() == "Long" || $field.getType().getSimpleName() == "Integer")
+						#if($field.getName().equals("id"))
+							$field.get($params.instance.getValue())
+						#else
+							<input type="number" name="$field.getName()" style="width: 98%" class="input-form" value="$field.get($params.instance.getValue())"></input> 						
+						#end
+					#elseif ($field.getType().getSimpleName() == "Date")
+						#if($field.get($params.instance.getValue()) == "")
+							<input type="datetime-local" name="$field.getName()" style="width: 98%" class="input-form"></input>
+						#else
+							<input type="datetime-local" name="$field.getName()" style="width: 98%" class="input-form" value="$ci.n("java.text.SimpleDateFormat","yyyy-MM-dd'T'HH:mm").format($field.get($params.instance.getValue()))"></input>						
+						#end
+					#elseif ($field.getType().getSimpleName() == "Boolean")
+						<input type="checkbox" name="$field.getName()"  
+							#if($field.get($params.instance.getValue()) == true)
+								checked
+		      				#end>
+		      			</input>
+		      		#elseif ($field.getType().getSimpleName() == "List")
+						<ul>
+							#foreach ($item in $field.get($params.instance.getValue()))
+								<li><a href="$params.context/$item.getClass().getSimpleName()/show/$item.getId()">$item</a></li>
+							#end
+						</ul>
+						<!-- modal -->
+						<div id="overlay-multiple-$field.getName()" class="overlay">
+							<div class="overlay-div">
+								[<a href='#' onclick="overlay('overlay-multiple-$field.getName()')">$message.get('close')</a>]
+								<table>
+									<thead>
+										<tr>
+											<th>-</th>
+											#foreach ($fi in $field.getGenericType().getActualTypeArguments()[0].getDeclaredFields())
+												<th>$message.get($fi.getName())</th>
+											#end
+										</tr>
+									</thead>
+									<tbody>
+										#foreach ($it in $controller.index($field.getGenericType().getActualTypeArguments()[0],null,null).getValue())
+											<tr>
+												#foreach ($fi in $it.getClass().getDeclaredFields())
+													$fi.setAccessible(true) 
+													#if ($fi.getName() == "id")
+														<td>
+															<input type="checkbox"
+																#if(!$field.get($params.instance.getValue()).isEmpty() && $field.get($params.instance.getValue()).contains($it))
+																	checked
+																#end
+															name="$field.getName().$fi.getName().$fi.get($it)" value="$fi.get($it)"></input>
+														</td> 
+													#end
+													<td>$fi.get($it)</td>
+												#end
+											</tr>
+										#end
+									</tbody>
+								</table>
+							</div>
+						</div>
+						<div style="width: 95%; text-align: end;">
+							<input type="button" onclick="overlay('overlay-multiple-$field.getName()')" value="$message.get('modify')" />
+						</div>
+						<!-- fin modal -->
+					#elseif ($classFinder.exist($field.getType()))
+					 	$field.get($params.instance.getValue())
+					 	<!-- modal -->
+						<div id="overlay-simple-$field.getName()" class="overlay">
+							<div class="overlay-div">
+								[<a href='#' onclick="overlay('overlay-simple-$field.getName()')">$message.get('close')</a>]
+								<table>
+									<thead>
+										<tr>
+											<th>-</th>
+											#foreach ($fi in $field.getType().getDeclaredFields())
+												<th>$message.get($fi.getName())</th>
+											#end
+										</tr>
+									</thead>
+									<tbody>
+										#foreach ($it in $controller.index($field.getType(),null,null).getValue())
+											<tr>
+												#foreach ($fi in $it.getClass().getDeclaredFields())
+													$fi.setAccessible(true) 
+													#if ($fi.getName() == "id")
+														<td>
+															<input type="radio"
+																#if($it.equals($field.get($params.instance.getValue())))
+																	checked
+																#end
+															name="$field.getName().$fi.getName()" value="$fi.get($it)"></input>
+														</td> 
+													#end
+													<td>$fi.get($it)</td> 
+												#end
+											</tr>
+										#end
+									</tbody>
+								</table>
+							</div>
+						</div>
+						<div style="width: 95%; text-align: end;">
+							<input type="button" onclick="overlay('overlay-simple-$field.getName()')" value="$message.get('modify')" />
+						</div>
+						<!-- fin modal -->
+					#else
+						$field.get($params.instance.getValue()) 
+					#end
+				</td>
+			</tr>
+		#end
+	</tbody>
+</table>

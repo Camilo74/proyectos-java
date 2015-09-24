@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <title>$message.get($params.entity)</title>
+    <link rel="stylesheet" media="screen" href="/css/market/perfil.css" >
+    <!–[if IE]>
+<link href='http://fonts.googleapis.com/css?family=Comfortaa' rel='stylesheet' type='text/css'>
+        <![endif]–>
+</head>
+<body style="background-color:#EBEBEB">
+
+<div id="BoxGeneral" class="BoxGeneral">
+
+	<div class="BoxHeader"><h2>Perfil</h2> <img class="logo" src="/img/market/logo.png" width="150"></div>
+	
+	<div class="BoxCenter">
+
+			<div style="width: 200px; float: left;">
+				<img style="padding: 30px;" src="/img/market/perfil${params.instance.value.sexo}.png" width="150">
+			</div>
+			
+			<div style="width: 480px; float: left;">
+				<h1>$params.instance.value.nombre.toUpperCase()</h1>
+				<p><b style="color: #ff5003;">Fecha de alta:</b> $params.instance.value.getFechaDeAltaAsString()</p><br>
+				<p><b style="color: #ff5003;">Mail:</b>  $params.instance.value.email</p><br>
+				<p><b style="color: #ff5003;">Sexo:</b>  $message.get("$params.instance.value.sexo")</p><br>
+				<p><b style="color: #ff5003;">Categorías:</b>  $params.instance.value.categorias</p><br>
+			</div>
+
+	</div>
+
+	<div class="BoxFooter">
+		<a class="submit" href="/e/Usuario/edit/$params.instance.value.id">$message.get("edit").toUpperCase()</a>
+		<a class="submit" href="/e/Usuario/remove/$params.instance.value.id">$message.get("remove").toUpperCase()</a>
+	</div>	
+	
+</div>
+</body>
+</html>
